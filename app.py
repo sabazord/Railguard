@@ -587,6 +587,125 @@ label {{ color: {TEXT_SEC} !important; font-size: 0.84rem !important; font-weigh
 ::-webkit-scrollbar-thumb {{ background: {BORDER}; border-radius: 3px; }}
 ::-webkit-scrollbar-thumb:hover {{ background: {ACCENT2}; }}
 
+
+/* ══════════════════════════════════════════
+   RESPONSIVIDADE — MOBILE / TABLET
+══════════════════════════════════════════ */
+
+/* Tablet (≤ 1024px) */
+@media (max-width: 1024px) {{
+    .main .block-container {{ padding: 1.2rem 1.2rem 3rem 1.2rem !important; }}
+    .kpi-value-v3 {{ font-size: 1.9rem !important; }}
+    .resumo-texto {{ font-size: 0.87rem !important; }}
+    .page-title   {{ font-size: 1.35rem !important; }}
+    .bloco-title  {{ font-size: 0.72rem !important; }}
+}}
+
+/* Mobile (≤ 768px) */
+@media (max-width: 768px) {{
+    /* Layout principal */
+    .main .block-container {{
+        padding: 0.8rem 0.8rem 2rem 0.8rem !important;
+    }}
+
+    /* Títulos */
+    .page-title      {{ font-size: 1.15rem !important; }}
+    .page-subtitle   {{ font-size: 0.74rem !important; }}
+    .page-icon       {{ width: 36px !important; height: 36px !important; font-size: 1.1rem !important; }}
+    .exec-title      {{ font-size: 1.1rem !important; }}
+    .exec-subtitle   {{ font-size: 0.76rem !important; }}
+
+    /* Resumo inteligente */
+    .resumo-box      {{ padding: 14px 16px !important; }}
+    .resumo-texto    {{ font-size: 0.82rem !important; line-height: 1.6 !important; }}
+    .resumo-ai-tag   {{ font-size: 0.62rem !important; }}
+
+    /* KPI cards — empilhar em coluna única em telas muito pequenas */
+    .kpi-v3          {{ padding: 14px 14px 12px !important; border-radius: 10px !important; }}
+    .kpi-value-v3    {{ font-size: 1.7rem !important; }}
+    .kpi-label-v3    {{ font-size: 0.66rem !important; }}
+    .kpi-sub-v3      {{ font-size: 0.73rem !important; }}
+    .kpi-watermark   {{ font-size: 1.6rem !important; right: 10px !important; top: 10px !important; }}
+
+    /* Cards de conteúdo */
+    .rg-card         {{ padding: 14px 14px !important; border-radius: 10px !important; }}
+    .rg-card-title   {{ font-size: 0.73rem !important; margin-bottom: 10px !important; }}
+
+    /* Alertas */
+    .alert-v3            {{ padding: 12px 14px !important; border-radius: 9px !important; }}
+    .alert-titulo-v3     {{ font-size: 0.84rem !important; }}
+    .alert-descricao     {{ font-size: 0.75rem !important; }}
+    .alert-meta-row      {{ gap: 10px !important; font-size: 0.68rem !important; }}
+    .alert-acao          {{ font-size: 0.69rem !important; }}
+    .chips-row           {{ gap: 4px !important; margin-top: 8px !important; }}
+    .chip                {{ font-size: 0.63rem !important; padding: 3px 9px !important; }}
+    .alert-timestamp     {{ font-size: 0.62rem !important; }}
+
+    /* Bloco headers */
+    .bloco-header    {{ margin: 20px 0 12px 0 !important; }}
+    .bloco-number    {{ width: 24px !important; height: 24px !important; font-size: 0.72rem !important; }}
+    .bloco-title     {{ font-size: 0.66rem !important; }}
+
+    /* Divisores */
+    .section-divider      {{ margin: 18px 0 12px 0 !important; }}
+    .section-divider-text {{ font-size: 0.62rem !important; }}
+
+    /* Chart insight */
+    .chart-insight   {{ font-size: 0.74rem !important; padding: 10px 12px !important; }}
+
+    /* Sidebar (colapsa naturalmente no Streamlit mobile) */
+    [data-testid="stSidebar"] {{ min-width: 200px !important; }}
+    .sidebar-logo-text   {{ font-size: 1rem !important; }}
+    .sidebar-stats       {{ padding: 12px 14px !important; margin: 8px 10px !important; }}
+    .sidebar-stat-value  {{ font-size: 1.2rem !important; }}
+
+    /* Formulários */
+    [data-testid="stForm"] {{ padding: 14px !important; }}
+
+    /* Abas */
+    [data-testid="stTabs"] [role="tab"] {{
+        font-size: 0.75rem !important;
+        padding: 7px 10px !important;
+    }}
+
+    /* Relatório executivo */
+    .exec-report-header  {{ padding: 18px 20px !important; border-radius: 12px !important; }}
+
+    /* Esconde watermark em telas pequenas para não poluir */
+    .kpi-watermark {{ display: none !important; }}
+
+    /* Métricas nativas */
+    [data-testid="stMetricValue"] {{ font-size: 1.25rem !important; }}
+
+    /* Scrollbar mais fina */
+    ::-webkit-scrollbar {{ width: 3px !important; height: 3px !important; }}
+}}
+
+/* Telas muito pequenas (≤ 480px) */
+@media (max-width: 480px) {{
+    .main .block-container {{ padding: 0.6rem 0.6rem 2rem 0.6rem !important; }}
+    .page-title      {{ font-size: 1rem !important; }}
+    .kpi-value-v3    {{ font-size: 1.5rem !important; }}
+    .resumo-texto    {{ font-size: 0.78rem !important; }}
+    .alert-v3        {{ padding: 10px 12px !important; }}
+
+    /* Colunas de alertas ficam empilhadas */
+    .chips-row       {{ flex-direction: column !important; }}
+    .chip            {{ width: 100% !important; text-align: center !important; }}
+}}
+
+/* Forçar colunas Streamlit a empilharem em mobile */
+@media (max-width: 640px) {{
+    [data-testid="column"] {{
+        min-width: 100% !important;
+        width: 100% !important;
+    }}
+    /* Plots ficam full width */
+    [data-testid="stPlotlyChart"] {{
+        width: 100% !important;
+    }}
+}}
+
 /* Ocultar elementos desnecessários */
 #MainMenu {{ visibility: hidden; }}
 footer    {{ visibility: hidden; }}
@@ -1181,14 +1300,22 @@ def page_dashboard():
                     unsafe_allow_html=True)
         df_a2 = db.get_all_ativos()
         if not df_riscos.empty and not df_a2.empty:
-            dhm = df_riscos.merge(
-                df_a2[["id", "tipo_ativo"]].rename(columns={"id": "ativo_id"}),
-                on="ativo_id", how="left",
-            )
-            pivot = dhm.groupby(["tipo_ativo", "nivel_risco"]).size().unstack(fill_value=0)
-            for col in ["Baixo", "Médio", "Alto", "Crítico"]:
-                if col not in pivot.columns: pivot[col] = 0
-            pivot = pivot[["Baixo", "Médio", "Alto", "Crítico"]]
+            # df_riscos já contém tipo_ativo da query JOIN — usar direto (sem merge)
+            # Se por algum motivo não tiver, faz o merge com sufixo explícito
+            if "tipo_ativo" in df_riscos.columns:
+                dhm = df_riscos[["tipo_ativo", "nivel_risco"]].copy()
+            else:
+                _a_hm = df_a2[["id", "tipo_ativo"]].rename(columns={"id": "ativo_id"})
+                dhm = df_riscos.merge(_a_hm, on="ativo_id", how="left",
+                                      suffixes=("", "_ativo"))[["tipo_ativo", "nivel_risco"]]
+            dhm = dhm.dropna(subset=["tipo_ativo", "nivel_risco"])
+            if dhm.empty:
+                st.markdown(f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">Dados insuficientes para o mapa de calor.</div>', unsafe_allow_html=True)
+            else:
+                pivot = dhm.groupby(["tipo_ativo", "nivel_risco"]).size().unstack(fill_value=0)
+                for col in ["Baixo", "Médio", "Alto", "Crítico"]:
+                    if col not in pivot.columns: pivot[col] = 0
+                pivot = pivot[["Baixo", "Médio", "Alto", "Crítico"]]
             fhm = go.Figure(go.Heatmap(
                 z=pivot.values, x=pivot.columns.tolist(), y=pivot.index.tolist(),
                 colorscale=[
@@ -1256,17 +1383,18 @@ def page_dashboard():
                 dt_str = str(row.get("data_alerta", ""))[:16]
                 acao = acoes_map.get(tipo, "Avaliar situação e acionar equipe técnica responsável.")
 
-                # Score associado
+                # Score associado — busca segura evitando KeyError
                 score_lbl = "Risco"
                 score_val = "—/100"
-                if not df_riscos.empty and ativo_cod != "—":
-                    rr = df_riscos[df_riscos.get("ativo_codigo", pd.Series(dtype=str)) == ativo_cod]
-                    if "ativo_codigo" in df_riscos.columns:
+                if not df_riscos.empty and ativo_cod != "—" and "ativo_codigo" in df_riscos.columns:
+                    try:
                         rr = df_riscos[df_riscos["ativo_codigo"] == ativo_cod]
                         if not rr.empty:
                             sr = rr.iloc[0]
                             score_lbl = "RCRS"
                             score_val = f"{float(sr.get('score_rcrs', 0)):.0f}/100"
+                    except Exception:
+                        pass
 
                 alert_card_v3(tipo, urg, msg, ativo_cod, trecho_cod,
                               score_lbl, score_val, dt_str, acao)
