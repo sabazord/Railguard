@@ -581,6 +581,54 @@ label {{ color: {TEXT_SEC} !important; font-size: 0.84rem !important; font-weigh
 .kv-label {{ font-size:0.79rem; color:{TEXT_MUT}; }}
 .kv-value {{ font-size:0.82rem; color:{TEXT_PRI}; font-weight:500; font-family:'JetBrains Mono',monospace; }}
 
+/* Aviso acadêmico / autoria */
+.academic-credit-card {{
+    background: linear-gradient(135deg, rgba(42,143,212,0.13), rgba(123,94,167,0.10));
+    border: 1px solid rgba(42,143,212,0.32);
+    border-left: 4px solid {ACCENT2};
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 0 0 26px 0;
+    position: relative;
+    overflow: hidden;
+}}
+.academic-credit-card::after {{
+    content: '';
+    position: absolute;
+    right: -45px;
+    top: -55px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(42,143,212,0.10);
+    pointer-events: none;
+}}
+.academic-credit-top {{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: {TEXT_PRI};
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}}
+.academic-credit-body {{
+    color: {TEXT_SEC};
+    font-size: 0.82rem;
+    line-height: 1.65;
+    max-width: 980px;
+}}
+.academic-credit-body strong {{ color: {TEXT_PRI}; font-weight: 700; }}
+.academic-credit-footer {{
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: {TEXT_MUT};
+    font-size: 0.74rem;
+    font-family: 'JetBrains Mono', monospace;
+}}
+
 /* Scrollbar */
 ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
 ::-webkit-scrollbar-track {{ background: {PRIMARY}; }}
@@ -881,7 +929,8 @@ with st.sidebar:
     </div>
     <div class="sidebar-footer">
         MVP v0.3 · {datetime.now().strftime("%d/%m/%Y %H:%M")}<br>
-        ⚠️ Dados simulados — uso demonstrativo
+        ⚠️ Dados simulados — uso acadêmico<br>
+        Desenvolvido por Allan Sabá · UFPA
     </div>
     """, unsafe_allow_html=True)
 
@@ -944,6 +993,23 @@ def row_kv(lbl, val):
 
 def chart_insight(texto):
     st.markdown(f'<div class="chart-insight">{texto}</div>', unsafe_allow_html=True)
+
+def academic_notice():
+    """Card fixo de transparência acadêmica e autoria do MVP."""
+    st.markdown(f"""
+    <div class="academic-credit-card">
+        <div class="academic-credit-top">🎓 Projeto acadêmico demonstrativo</div>
+        <div class="academic-credit-body">
+            O <strong>RailGuard AI</strong> é um MVP desenvolvido para fins acadêmicos e de demonstração técnica.
+            Os dados, inspeções, scores de risco, indicadores RCRS, alertas e métricas ESG exibidos nesta plataforma
+            são <strong>fictícios/simulados</strong> e não representam diagnósticos oficiais, ativos reais ou integração
+            com operadores ferroviários, ANTT ou outros órgãos reguladores.
+        </div>
+        <div class="academic-credit-footer">
+            Desenvolvido por Allan Sabá · Engenharia Ferroviária e Logística · UFPA
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 def alert_card_v3(tipo, urgencia, descricao, ativo_cod, trecho_cod, score_label, score_val, dt_str, acao):
     """Card de alerta v3 com chips de ação."""
@@ -1056,6 +1122,7 @@ def gerar_resumo_inteligente(stats, df_riscos, df_alertas):
 def page_dashboard():
     ph("📊", "Centro de Controle Operacional",
        "Visão consolidada da malha ferroviária monitorada — RailGuard AI v0.3")
+    academic_notice()
 
     stats     = db.get_dashboard_stats()
     df_riscos = db.get_all_riscos()
@@ -1298,49 +1365,80 @@ def page_dashboard():
     with ce:
         st.markdown('<div class="rg-card"><div class="rg-card-title">Risco por Tipo de Ativo</div>',
                     unsafe_allow_html=True)
-        df_a2 = db.get_all_ativos()
-        if not df_riscos.empty and not df_a2.empty:
-            # df_riscos já contém tipo_ativo da query JOIN — usar direto (sem merge)
-            # Se por algum motivo não tiver, faz o merge com sufixo explícito
-            if "tipo_ativo" in df_riscos.columns:
-                dhm = df_riscos[["tipo_ativo", "nivel_risco"]].copy()
+
+        if df_riscos.empty:
+            st.markdown(
+                f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">'
+                'Dados insuficientes para o mapa de calor.</div>',
+                unsafe_allow_html=True,
+            )
+        else:
+            # Correção robusta: em alguns ambientes/versões, o DataFrame de riscos
+            # pode vir sem tipo_ativo ou com sufixos gerados por merge.
+            # Aqui normalizamos a coluna antes do groupby para evitar KeyError.
+            dhm = df_riscos.copy()
+
+            if "tipo_ativo" not in dhm.columns:
+                df_a2 = db.get_all_ativos()
+                if not df_a2.empty and {"id", "tipo_ativo"}.issubset(df_a2.columns):
+                    dhm = dhm.merge(
+                        df_a2[["id", "tipo_ativo"]].rename(columns={"id": "ativo_id"}),
+                        on="ativo_id",
+                        how="left",
+                    )
+
+            # Caso o merge tenha criado nomes como tipo_ativo_x/tipo_ativo_y,
+            # escolhe automaticamente a primeira coluna válida.
+            if "tipo_ativo" not in dhm.columns:
+                candidatos = [c for c in dhm.columns if c.startswith("tipo_ativo")]
+                if candidatos:
+                    dhm["tipo_ativo"] = dhm[candidatos[0]]
+
+            if {"tipo_ativo", "nivel_risco"}.issubset(dhm.columns):
+                dhm = dhm[["tipo_ativo", "nivel_risco"]].dropna()
             else:
-                _a_hm = df_a2[["id", "tipo_ativo"]].rename(columns={"id": "ativo_id"})
-                dhm = df_riscos.merge(_a_hm, on="ativo_id", how="left",
-                                      suffixes=("", "_ativo"))[["tipo_ativo", "nivel_risco"]]
-            dhm = dhm.dropna(subset=["tipo_ativo", "nivel_risco"])
+                dhm = pd.DataFrame(columns=["tipo_ativo", "nivel_risco"])
+
             if dhm.empty:
-                st.markdown(f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">Dados insuficientes para o mapa de calor.</div>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">'
+                    'Dados insuficientes para o mapa de calor.</div>',
+                    unsafe_allow_html=True,
+                )
             else:
                 pivot = dhm.groupby(["tipo_ativo", "nivel_risco"]).size().unstack(fill_value=0)
                 for col in ["Baixo", "Médio", "Alto", "Crítico"]:
-                    if col not in pivot.columns: pivot[col] = 0
+                    if col not in pivot.columns:
+                        pivot[col] = 0
                 pivot = pivot[["Baixo", "Médio", "Alto", "Crítico"]]
-            fhm = go.Figure(go.Heatmap(
-                z=pivot.values, x=pivot.columns.tolist(), y=pivot.index.tolist(),
-                colorscale=[
-                    [0, "rgba(12,184,122,0.2)"], [0.33, "rgba(244,166,42,0.5)"],
-                    [0.66, "rgba(244,123,53,0.75)"], [1, "rgba(230,57,70,0.95)"],
-                ],
-                text=pivot.values, texttemplate="%{text}",
-                textfont=dict(size=14, color="white", family="Inter"),
-                showscale=False,
-                hovertemplate="<b>%{y}</b><br>Risco %{x}: %{z} inspeções<extra></extra>",
-            ))
-            _pt(fhm); fhm.update_layout(
-                height=270, margin=dict(t=8, b=8, l=8, r=8),
-                xaxis=dict(showgrid=False, side="top",
-                           tickfont=dict(size=12, color=TEXT_SEC)),
-                yaxis=dict(showgrid=False, autorange="reversed",
-                           tickfont=dict(size=11, color=TEXT_SEC)),
-            )
-            st.plotly_chart(fhm, use_container_width=True)
-            tipo_mais_crit = pivot["Crítico"].idxmax() if "Crítico" in pivot.columns else "—"
-            chart_insight(
-                f"Tipo com maior concentração crítica: <strong>{tipo_mais_crit}</strong>. "
-                f"Valores mais altos (vermelho) indicam maior frequência de riscos elevados "
-                f"naquele tipo de ativo."
-            )
+
+                fhm = go.Figure(go.Heatmap(
+                    z=pivot.values, x=pivot.columns.tolist(), y=pivot.index.tolist(),
+                    colorscale=[
+                        [0, "rgba(12,184,122,0.2)"], [0.33, "rgba(244,166,42,0.5)"],
+                        [0.66, "rgba(244,123,53,0.75)"], [1, "rgba(230,57,70,0.95)"],
+                    ],
+                    text=pivot.values, texttemplate="%{text}",
+                    textfont=dict(size=14, color="white", family="Inter"),
+                    showscale=False,
+                    hovertemplate="<b>%{y}</b><br>Risco %{x}: %{z} inspeções<extra></extra>",
+                ))
+                _pt(fhm); fhm.update_layout(
+                    height=270, margin=dict(t=8, b=8, l=8, r=8),
+                    xaxis=dict(showgrid=False, side="top",
+                               tickfont=dict(size=12, color=TEXT_SEC)),
+                    yaxis=dict(showgrid=False, autorange="reversed",
+                               tickfont=dict(size=11, color=TEXT_SEC)),
+                )
+                st.plotly_chart(fhm, use_container_width=True)
+
+                tipo_mais_crit = pivot["Crítico"].idxmax() if "Crítico" in pivot.columns else "—"
+                chart_insight(
+                    f"Tipo com maior concentração crítica: <strong>{tipo_mais_crit}</strong>. "
+                    f"Valores mais altos (vermelho) indicam maior frequência de riscos elevados "
+                    f"naquele tipo de ativo."
+                )
+
         st.markdown("</div>", unsafe_allow_html=True)
 
     # ══════════════════════════════════════════════════════════════════
