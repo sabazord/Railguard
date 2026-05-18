@@ -1,0 +1,35 @@
+# RailGuard AI — Dependências do Projeto
+# Gerado para Python 3.11+
+#
+# Instalação:
+#   pip install -r requirements.txt
+
+# === Interface Web ===
+streamlit>=1.35.0
+
+# === Dados e Análise ===
+pandas>=2.1.0
+numpy>=1.26.0
+
+# === Visualização ===
+plotly>=5.20.0
+
+# === Machine Learning ===
+scikit-learn>=1.4.0
+
+# === Banco de Dados ===
+# SQLite já vem embutido no Python (módulo sqlite3)
+# Para futura migração ao PostgreSQL, descomente abaixo:
+# psycopg2-binary>=2.9.9
+# sqlalchemy>=2.0.0
+
+# === Utilitários ===
+python-dateutil>=2.9.0
+
+# === Exportação de Relatórios (opcional — PDF) ===
+# fpdf2>=2.7.0        # Para geração de PDF simples
+# reportlab>=4.1.0    # Alternativa robusta para PDFs
+
+# === Explicabilidade Avançada (futura integração) ===
+# shap>=0.45.0        # SHAP values para explicabilidade do RandomForest
+# lime>=0.2.0         # LIME — Local Interpretable Model-agnostic Explanations
