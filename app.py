@@ -1,5 +1,5 @@
 """
-RailGuard AI — Aplicação Principal v3 (UX Redesign)
+RailGuard AI — Aplicação Principal v3 (UX Redesign Profissional)
 =====================================================
 Plataforma de Compliance Preditivo Ferroviário
 MVP demonstrativo — dados simulados.
@@ -32,7 +32,6 @@ import seed_data
 
 st.set_page_config(
     page_title="RailGuard AI · Centro de Controle Ferroviário",
-    page_icon="🚂",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -836,18 +835,18 @@ def gauge_risco(score, nivel, h=240):
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "Dashboard"
 
-# Mapeamento ícone → chave interna
+# Mapeamento de rótulos → chave interna
 NAV_MAP = {
-    "Dashboard":       ("📊", "Operação"),
-    "Trechos":         ("🛤️", "Operação"),
-    "Ativos":          ("⚙️", "Operação"),
-    "Inspeções":       ("🔍", "Operação"),
-    "Modelo Preditivo":("🤖", "Inteligência"),
-    "Compliance":      ("📋", "Inteligência"),
-    "Auditoria":       ("🗂️", "Inteligência"),
-    "ESG":             ("🌿", "Gestão"),
-    "Relatórios":      ("📄", "Gestão"),
-    "Configurações":   ("⚙️", "Gestão"),
+    "Dashboard":       ("DASH", "Operação"),
+    "Trechos":         ("TRC", "Operação"),
+    "Ativos":          ("ATV", "Operação"),
+    "Inspeções":       ("INSP", "Operação"),
+    "Modelo Preditivo":("ML", "Inteligência"),
+    "Compliance":      ("COMP", "Inteligência"),
+    "Auditoria":       ("AUD", "Inteligência"),
+    "ESG":             ("ESG", "Gestão"),
+    "Relatórios":      ("REL", "Gestão"),
+    "Configurações":   ("AT", "Gestão"),
 }
 CATEGORIAS = {
     "Operação":    ["Dashboard", "Trechos", "Ativos", "Inspeções"],
@@ -877,7 +876,7 @@ with st.sidebar:
         <div style="padding:14px 20px 5px 20px; font-size:0.62rem; font-weight:700;
                     letter-spacing:0.14em; text-transform:uppercase; color:{TEXT_MUT};
                     border-top:1px solid {BORDER}; margin-top:4px;">
-            <span style="color:{cor_cat}88;">▸</span> {cat}
+            <span style="color:{cor_cat}88;">-</span> {cat}
         </div>
         """, unsafe_allow_html=True)
         for item in itens:
@@ -888,7 +887,7 @@ with st.sidebar:
             borda  = f"1px solid {ACCENT2}44" if ativo else "1px solid transparent"
             # Usa um botão nativo do Streamlit com hack de CSS para parecer nav item
             if st.button(
-                f"{icone}  {item}",
+                f"{icone} · {item}",
                 key=f"nav_{item}",
                 use_container_width=True,
             ):
@@ -929,7 +928,7 @@ with st.sidebar:
     </div>
     <div class="sidebar-footer">
         MVP v0.3 · {datetime.now().strftime("%d/%m/%Y %H:%M")}<br>
-        ⚠️ Dados simulados — uso acadêmico<br>
+        Dados simulados — uso acadêmico<br>
         Desenvolvido por Allan Sabá · UFPA
     </div>
     """, unsafe_allow_html=True)
@@ -998,7 +997,7 @@ def academic_notice():
     """Card fixo de transparência acadêmica e autoria do MVP."""
     st.markdown(f"""
     <div class="academic-credit-card">
-        <div class="academic-credit-top">🎓 Projeto acadêmico demonstrativo</div>
+        <div class="academic-credit-top">Projeto acadêmico demonstrativo</div>
         <div class="academic-credit-body">
             O <strong>RailGuard AI</strong> é um MVP desenvolvido para fins acadêmicos e de demonstração técnica.
             Os dados, inspeções, scores de risco, indicadores RCRS, alertas e métricas ESG exibidos nesta plataforma
@@ -1041,11 +1040,11 @@ def alert_card_v3(tipo, urgencia, descricao, ativo_cod, trecho_cod, score_label,
         <div class="alert-descricao">{descricao}</div>
         <div class="alert-meta-row">
             <div class="alert-meta-item">
-                <span class="alert-meta-label">⚙️ Ativo:</span>
+                <span class="alert-meta-label">Ativo:</span>
                 <span class="alert-meta-value">{ativo_cod}</span>
             </div>
             <div class="alert-meta-item">
-                <span class="alert-meta-label">🛤️ Trecho:</span>
+                <span class="alert-meta-label">Trecho:</span>
                 <span class="alert-meta-value">{trecho_cod}</span>
             </div>
             <div class="alert-meta-item">
@@ -1120,7 +1119,7 @@ def gerar_resumo_inteligente(stats, df_riscos, df_alertas):
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_dashboard():
-    ph("📊", "Centro de Controle Operacional",
+    ph("DB", "Centro de Controle Operacional",
        "Visão consolidada da malha ferroviária monitorada — RailGuard AI v0.3")
     academic_notice()
 
@@ -1158,27 +1157,27 @@ def page_dashboard():
     with c1:
         kpi_v3("Trechos Monitorados", stats["total_trechos"],
                "Malha ferroviária ativa",
-               "Normal", C_BAIXO, "neutral", "🛤️")
+               "Normal", C_BAIXO, "neutral", "TR")
     with c2:
         kpi_v3("Ativos Monitorados", stats["total_ativos"],
                "Infraestrutura em operação",
-               "Monitoramento contínuo", ACCENT2, "neutral", "⚙️")
+               "Monitoramento contínuo", ACCENT2, "neutral", "AT")
     with c3:
         kpi_v3("Inspeções Técnicas", stats["total_inspecoes"],
                "Registros de campo acumulados",
-               "Base de análise", C_BAIXO, "success", "🔍")
+               "Base de análise", C_BAIXO, "success", "IN")
     with c4:
         st_cor = C_CRITICO if stats["total_alertas_abertos"] > 5 else C_MEDIO
         st_txt = "Atenção operacional" if stats["total_alertas_abertos"] > 0 else "Sem alertas"
         kpi_v3("Alertas Abertos", stats["total_alertas_abertos"],
                f"{stats['risco_critico']} requerem ação imediata",
-               st_txt, st_cor, "danger", "🚨")
+               st_txt, st_cor, "danger", "AL")
     with c5:
         oc_txt = "Prioridade alta" if total_oc > 5 else "Monitorar"
         oc_cor = C_CRITICO if stats["risco_critico"] > 3 else C_ALTO
         kpi_v3("Ocorrências Críticas", total_oc,
                f"{stats['risco_critico']} críticos · {pct_oc:.0f}% da malha",
-               oc_txt, oc_cor, "warning", "⚠️")
+               oc_txt, oc_cor, "warning", "Atenção")
 
     # ══════════════════════════════════════════════════════════════════
     #  BLOCO 2 — ANÁLISE DE RISCO OPERACIONAL
@@ -1450,7 +1449,7 @@ def page_dashboard():
         st.markdown(f"""
         <div style="background:{CARD_BG}; border:1px solid {BORDER}; border-radius:12px;
                     padding:28px; text-align:center; color:{C_BAIXO};">
-            <div style="font-size:1.8rem; margin-bottom:8px;">✅</div>
+            <div style="font-size:1.8rem; margin-bottom:8px;">OK</div>
             <div style="font-size:0.95rem; font-weight:600;">Nenhum alerta operacional ativo</div>
             <div style="font-size:0.82rem; color:{TEXT_MUT}; margin-top:4px;">
                 A malha ferroviária encontra-se dentro dos parâmetros de normalidade.
@@ -1511,9 +1510,9 @@ def page_dashboard():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_trechos():
-    ph("🛤️", "Trechos Ferroviários",
+    ph("TR", "Trechos Ferroviários",
        "Cadastro, monitoramento e análise dos trechos da malha ferroviária")
-    tab1, tab2 = st.tabs(["📋  Trechos Cadastrados", "➕  Cadastrar Novo Trecho"])
+    tab1, tab2 = st.tabs(["Trechos Cadastrados", "Cadastrar Novo Trecho"])
 
     with tab1:
         df = db.get_all_trechos()
@@ -1584,21 +1583,21 @@ def page_trechos():
             criticidade = c7.selectbox("Criticidade Operacional *", m.CRITICIDADE_OPERACIONAL)
             obs = st.text_area("Observações Técnicas",
                                placeholder="Descreva características relevantes do trecho…")
-            sub = st.form_submit_button("💾  Cadastrar Trecho", type="primary")
+            sub = st.form_submit_button("  Cadastrar Trecho", type="primary")
 
         if sub:
-            if not codigo: danger("❌ Informe o código do trecho.")
-            elif km_fin <= km_ini: danger("❌ Km Final deve ser maior que Km Inicial.")
+            if not codigo: danger(" Informe o código do trecho.")
+            elif km_fin <= km_ini: danger(" Km Final deve ser maior que Km Inicial.")
             else:
                 try:
                     tid = db.insert_trecho(codigo, ferrovia, km_ini, km_fin,
                                            estado, tipo_via, criticidade, obs)
                     db.insert_auditoria("INSERÇÃO", "Usuário", f"Trecho {codigo}",
                                         "Cadastrado via interface.")
-                    info(f"✅ Trecho <b>{codigo}</b> cadastrado com sucesso (ID: {tid}).")
+                    info(f"OK Trecho <b>{codigo}</b> cadastrado com sucesso (ID: {tid}).")
                     st.rerun()
                 except Exception as e:
-                    danger(f"❌ Erro ao cadastrar: {e}")
+                    danger(f" Erro ao cadastrar: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1606,9 +1605,9 @@ def page_trechos():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_ativos():
-    ph("⚙️", "Ativos Monitorados",
+    ph("AT", "Ativos Monitorados",
        "Gestão de ativos de infraestrutura ferroviária — trilhos, dormentes, pontes, AMVs e sinalização")
-    tab1, tab2 = st.tabs(["📋  Ativos Monitorados", "➕  Cadastrar Novo Ativo"])
+    tab1, tab2 = st.tabs(["Ativos Monitorados", "Cadastrar Novo Ativo"])
 
     with tab1:
         df = db.get_all_ativos()
@@ -1617,7 +1616,7 @@ def page_ativos():
         c1, c2, c3 = st.columns(3)
         tf = c1.multiselect("Filtrar por Tipo",     m.TIPOS_ATIVO)
         cf = c2.multiselect("Filtrar por Condição", m.CONDICAO_VISUAL)
-        bf = c3.text_input("🔍  Buscar por código ou ferrovia")
+        bf = c3.text_input("IN  Buscar por código ou ferrovia")
 
         df2 = df.copy()
         if tf: df2 = df2[df2["tipo_ativo"].isin(tf)]
@@ -1681,7 +1680,7 @@ def page_ativos():
 
     with tab2:
         df_t = db.get_all_trechos()
-        if df_t.empty: warn("⚠️ Cadastre ao menos um trecho antes de adicionar ativos."); return
+        if df_t.empty: warn("Atenção Cadastre ao menos um trecho antes de adicionar ativos."); return
 
         opts = {f"{r['codigo']} — {r['ferrovia']}": r["id"] for _, r in df_t.iterrows()}
         with st.form("form_ativo"):
@@ -1698,19 +1697,19 @@ def page_ativos():
             condicao = st.selectbox("Condição Visual *", m.CONDICAO_VISUAL)
             obs = st.text_area("Observações Técnicas",
                                placeholder="Descreva o estado atual do ativo…")
-            sub = st.form_submit_button("💾  Cadastrar Ativo", type="primary")
+            sub = st.form_submit_button("  Cadastrar Ativo", type="primary")
 
         if sub:
-            if not codigo: danger("❌ Informe o código do ativo.")
+            if not codigo: danger(" Informe o código do ativo.")
             else:
                 try:
                     aid = db.insert_ativo(codigo, tipo_ativo, opts[tsel],
                                           idade, str(data_m), condicao, obs)
                     db.insert_auditoria("INSERÇÃO", "Usuário", f"Ativo {codigo}",
                                         "Cadastrado via interface.")
-                    info(f"✅ Ativo <b>{codigo}</b> cadastrado com sucesso (ID: {aid}).")
+                    info(f"OK Ativo <b>{codigo}</b> cadastrado com sucesso (ID: {aid}).")
                     st.rerun()
-                except Exception as e: danger(f"❌ Erro: {e}")
+                except Exception as e: danger(f" Erro: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1718,9 +1717,9 @@ def page_ativos():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_inspecoes():
-    ph("🔍", "Inspeções Técnicas",
+    ph("IN", "Inspeções Técnicas",
        "Registro de inspeções de campo com cálculo automático de risco e conformidade")
-    tab1, tab2 = st.tabs(["📋  Inspeções Registradas", "➕  Registrar Nova Inspeção"])
+    tab1, tab2 = st.tabs(["Inspeções Registradas", "Registrar Nova Inspeção"])
 
     with tab1:
         df = db.get_all_inspecoes()
@@ -1773,7 +1772,7 @@ def page_inspecoes():
 
     with tab2:
         df_a = db.get_all_ativos()
-        if df_a.empty: warn("⚠️ Cadastre ao menos um ativo antes de registrar inspeções."); return
+        if df_a.empty: warn("Atenção Cadastre ao menos um ativo antes de registrar inspeções."); return
 
         opts = {f"{r['codigo']} — {r['tipo_ativo']} ({r['trecho_codigo']})": r["id"]
                 for _, r in df_a.iterrows()}
@@ -1805,10 +1804,10 @@ def page_inspecoes():
             obs  = st.text_area("Observações Técnicas")
             img  = st.file_uploader("Evidência Fotográfica (opcional)",
                                     type=["jpg", "jpeg", "png"])
-            sub  = st.form_submit_button("💾  Registrar Inspeção", type="primary")
+            sub  = st.form_submit_button("  Registrar Inspeção", type="primary")
 
         if sub:
-            if not resp: danger("❌ Informe o responsável técnico.")
+            if not resp: danger(" Informe o responsável técnico.")
             else:
                 try:
                     aid2   = opts[asel]
@@ -1852,7 +1851,7 @@ def page_inspecoes():
                     <div style="background:{CARD_BG};border:1px solid {cor_nv}55;
                                 border-radius:14px;padding:22px;margin-top:18px;">
                         <div style="font-size:1rem;font-weight:700;color:{cor_nv};margin-bottom:14px;">
-                            ✅ Inspeção registrada com sucesso
+                            OK Inspeção registrada com sucesso
                         </div>
                         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;">
                             <div>
@@ -1881,7 +1880,7 @@ def page_inspecoes():
                     </div>
                     """, unsafe_allow_html=True)
                     st.rerun()
-                except Exception as e: danger(f"❌ Erro ao registrar: {e}")
+                except Exception as e: danger(f" Erro ao registrar: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1889,7 +1888,7 @@ def page_inspecoes():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_ml():
-    ph("🤖", "Modelo Preditivo de Risco",
+    ph("ML", "Modelo Preditivo de Risco",
        "RandomForestClassifier — previsão de nível de risco operacional por ativo ferroviário")
 
     if "modelo_rf" not in st.session_state:
@@ -1916,7 +1915,7 @@ def page_ml():
     fonte = st.session_state.get("fonte_ml", "Sintéticos")
 
     t1, t2, t3 = st.tabs(
-        ["📈  Desempenho do Modelo", "📊  Importância de Variáveis", "🔮  Simulação de Predição"]
+        ["  Desempenho do Modelo", "DB  Importância de Variáveis", "  Simulação de Predição"]
     )
 
     with t1:
@@ -1942,13 +1941,13 @@ def page_ml():
                 st.markdown(row_kv(l, v), unsafe_allow_html=True)
             st.markdown(f"""
             <div class="info-box" style="margin-top:14px;">
-                💡 <b>Roadmap v0.4:</b> Integração com SHAP para explicabilidade
+                 <b>Roadmap v0.4:</b> Integração com SHAP para explicabilidade
                 baseada em valores de Shapley.
                 Use <code>shap.TreeExplainer(model)</code> em <code>ml_model.py</code>.
             </div>
             """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
-            if st.button("🔄  Retreinar Modelo", type="secondary"):
+            if st.button("  Retreinar Modelo", type="secondary"):
                 del st.session_state["modelo_rf"]
                 st.rerun()
 
@@ -2002,7 +2001,7 @@ def page_ml():
             c9, c10 = st.columns(2)
             pv  = c9.slider("Nível de Vibração (0–10)", 0.0, 10.0, 3.0, 0.1)
             pcg = c10.slider("Carga Operacional (%)",   0.0, 100.0, 50.0, 1.0)
-            subp = st.form_submit_button("🔮  Executar Predição", type="primary")
+            subp = st.form_submit_button("  Executar Predição", type="primary")
         st.markdown("</div>", unsafe_allow_html=True)
 
         if subp:
@@ -2088,9 +2087,9 @@ def page_ml():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_compliance():
-    ph("📋", "Compliance & RCRS",
+    ph("CP", "Compliance & RCRS",
        "Índice de conformidade regulatória e risco sistêmico — Railway Compliance Risk Score")
-    t1, t2 = st.tabs(["📊  Visão Geral de Conformidade", "🧮  Calculadora RCRS"])
+    t1, t2 = st.tabs(["Visão Geral de Conformidade", "Calculadora RCRS"])
 
     with t1:
         df_r = db.get_all_riscos()
@@ -2206,7 +2205,7 @@ def page_compliance():
             c5, c6 = st.columns(2)
             re2 = c5.slider("Risco ESG (0–100)", 0.0, 100.0, 30.0)
             cd2 = c6.slider("Confiabilidade do Dado (%)", 0.0, 100.0, 80.0)
-            sub_rc = st.form_submit_button("🧮  Calcular RCRS", type="primary")
+            sub_rc = st.form_submit_button("  Calcular RCRS", type="primary")
         st.markdown("</div>", unsafe_allow_html=True)
 
         if sub_rc:
@@ -2242,7 +2241,7 @@ def page_compliance():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_auditoria():
-    ph("🗂️", "Auditoria & Rastreabilidade",
+    ph("AU", "Auditoria & Rastreabilidade",
        "Registro imutável de todas as operações realizadas na plataforma")
 
     df = db.get_all_auditoria()
@@ -2276,7 +2275,7 @@ def page_auditoria():
     c1, c2, c3 = st.columns(3)
     tf = c1.multiselect("Tipo de Ação",  df["tipo_acao"].unique().tolist())
     uf = c2.multiselect("Usuário",       df["usuario"].unique().tolist())
-    bf = c3.text_input("🔍  Buscar em item ou descrição")
+    bf = c3.text_input("IN  Buscar em item ou descrição")
 
     df2 = df.copy()
     if tf:  df2 = df2[df2["tipo_acao"].isin(tf)]
@@ -2299,12 +2298,12 @@ def page_auditoria():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_esg():
-    ph("🌿", "Indicadores ESG",
+    ph("ESG", "Indicadores ESG",
        "Ambiental, Social e Governança — sustentabilidade e impacto da infraestrutura ferroviária")
 
     st.markdown(f"""
     <div class="info-box">
-        📌 <b>Nota metodológica:</b> Os indicadores ESG são calculados com modelos parametrizados
+         <b>Nota metodológica:</b> Os indicadores ESG são calculados com modelos parametrizados
         e dados simulados. Em ambiente produtivo devem ser complementados com inventários GHG
         certificados, relatórios socioambientais e auditorias independentes.
     </div>
@@ -2421,10 +2420,10 @@ def page_esg():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_relatorios():
-    ph("📄", "Relatórios Executivos",
+    ph("REL", "Relatórios Executivos",
        "Relatórios técnicos de compliance com evidências, scores e rastreabilidade completa")
 
-    t1, t2 = st.tabs(["📦  Relatório por Ativo", "🛤️  Relatório por Trecho"])
+    t1, t2 = st.tabs(["Relatório por Ativo", "Relatório por Trecho"])
 
     with t1:
         df_a = db.get_all_ativos()
@@ -2438,12 +2437,12 @@ def page_relatorios():
         sel = cx.selectbox("Selecionar Ativo para Relatório", list(opts.keys()))
         with cy:
             st.markdown("<br>", unsafe_allow_html=True)
-            gerar = st.button("📋  Gerar Relatório", type="primary")
+            gerar = st.button("CP  Gerar Relatório", type="primary")
         if not gerar: return
 
         ativo_id = opts[sel]
         rel = rp.gerar_relatorio_ativo(ativo_id)
-        if not rel: danger("❌ Ativo não encontrado."); return
+        if not rel: danger(" Ativo não encontrado."); return
 
         av = rel["ativo"]
         tr = rel["trecho"]
@@ -2616,7 +2615,7 @@ def page_relatorios():
         sdiv("EXPORTAR RELATÓRIO")
         csv_out = rp.relatorio_para_csv(rel)
         st.download_button(
-            "⬇️  Exportar Relatório Completo (CSV)",
+            "⬇  Exportar Relatório Completo (CSV)",
             data=csv_out.encode("utf-8"),
             file_name=f"railguard_{av['codigo']}_{date.today()}.csv",
             mime="text/csv",
@@ -2632,7 +2631,7 @@ def page_relatorios():
         sel_t = cx2.selectbox("Selecionar Trecho", list(opts_t.keys()))
         with cy2:
             st.markdown("<br>", unsafe_allow_html=True)
-            gerar_t = st.button("📋  Gerar Relatório de Trecho", type="primary")
+            gerar_t = st.button("CP  Gerar Relatório de Trecho", type="primary")
         if not gerar_t: return
 
         tid  = opts_t[sel_t]
@@ -2691,7 +2690,7 @@ def page_relatorios():
         sdiv("EXPORTAR")
         csv_t2 = rp.relatorio_trecho_para_csv(tid)
         st.download_button(
-            "⬇️  Exportar Relatório do Trecho (CSV)",
+            "⬇  Exportar Relatório do Trecho (CSV)",
             data=csv_t2.encode("utf-8"),
             file_name=f"railguard_trecho_{tr2['codigo']}_{date.today()}.csv",
             mime="text/csv",
@@ -2703,7 +2702,7 @@ def page_relatorios():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_config():
-    ph("⚙️", "Configurações do Sistema",
+    ph("AT", "Configurações do Sistema",
        "Informações técnicas, status da plataforma, migração e manutenção")
 
     c1, c2 = st.columns(2)
@@ -2738,11 +2737,11 @@ def page_config():
             st.markdown(row_kv(l, v), unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    warn("⚠️ <b>Aviso:</b> MVP acadêmico/demonstrativo. Dados simulados. "
+    warn("<b>Aviso:</b> MVP acadêmico/demonstrativo. Dados simulados. "
          "Sem integração com ANTT, ANAC ou operadores ferroviários reais.")
 
     sdiv("GUIA DE MIGRAÇÃO PARA POSTGRESQL")
-    with st.expander("📖  Ver instruções completas"):
+    with st.expander("  Ver instruções completas"):
         st.code("""
 # 1. Instalar dependências
 pip install psycopg2-binary sqlalchemy
@@ -2761,14 +2760,14 @@ def get_connection():
 for tabela in ["trechos","ativos","inspecoes","riscos","alertas","auditoria","indicadores_esg"]:
     df = pd.read_sql_query(f"SELECT * FROM {tabela}", sqlite_conn)
     df.to_sql(tabela, pg_engine, if_exists="append", index=False)
-    print(f"✅ {tabela}: {len(df)} registros migrados")
+    print(f"OK {tabela}: {len(df)} registros migrados")
         """, language="python")
 
     sdiv("RECARREGAR DADOS DE DEMONSTRAÇÃO")
-    warn("⚠️ Esta ação apaga todos os dados atuais e recarrega os dados simulados de demonstração.")
+    warn("Atenção Esta ação apaga todos os dados atuais e recarrega os dados simulados de demonstração.")
     cb_, _ = st.columns([1, 3])
     with cb_:
-        if st.button("🗑️  Recarregar Demonstração", type="secondary"):
+        if st.button("  Recarregar Demonstração", type="secondary"):
             if os.path.exists(db.DB_PATH):
                 os.remove(db.DB_PATH)
             db.init_database()
@@ -2776,7 +2775,7 @@ for tabela in ["trechos","ativos","inspecoes","riscos","alertas","auditoria","in
             for k in ["modelo_rf", "fonte_ml", "ml_acc", "ml_report"]:
                 if k in st.session_state:
                     del st.session_state[k]
-            info("✅ Dados de demonstração recarregados com sucesso.")
+            info("OK Dados de demonstração recarregados com sucesso.")
             st.rerun()
 
 
