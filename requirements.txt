@@ -5,7 +5,7 @@
 #   pip install -r requirements.txt
 
 # === Interface Web ===
-streamlit>=1.35.0
+streamlit>=1.52.0   # app usa width="stretch" (substituto de use_container_width)
 
 # === Dados e Análise ===
 pandas>=2.1.0

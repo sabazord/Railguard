@@ -1,0 +1,10 @@
+# Banco e imagens gerados em tempo de execução (o app recria o banco sozinho)
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Ferramentas locais
+.claude/

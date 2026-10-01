@@ -1,5 +1,5 @@
 """
-RailGuard AI — Aplicação Principal v3 (UX Redesign Profissional)
+RailGuard AI — Aplicação Principal v3 (UX Redesign)
 =====================================================
 Plataforma de Compliance Preditivo Ferroviário
 MVP demonstrativo — dados simulados.
@@ -203,13 +203,10 @@ html, body, [class*="css"] {{ font-family: 'Inter', sans-serif !important; }}
     border-bottom: 1px solid {BORDER};
     margin-bottom: 28px;
 }}
-.page-icon {{
-    width: 48px; height: 48px; flex-shrink: 0;
-    background: linear-gradient(135deg, {ACCENT2}22, {ACCENT2}44);
-    border: 1px solid {ACCENT2}44;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
+.page-accent {{
+    width: 4px; height: 48px; flex-shrink: 0;
+    background: linear-gradient(180deg, {ACCENT2}, {ACCENT3});
+    border-radius: 2px;
 }}
 .page-title {{
     font-size: 1.65rem; font-weight: 800;
@@ -306,11 +303,6 @@ html, body, [class*="css"] {{ font-family: 'Inter', sans-serif !important; }}
 .kpi-v3.kpi-danger::after  {{ background: linear-gradient(90deg, {C_CRITICO}, transparent); }}
 .kpi-v3.kpi-comp::after    {{ background: linear-gradient(90deg, {C_COMP}, transparent); }}
 .kpi-v3.kpi-neutral::after {{ background: linear-gradient(90deg, {ACCENT2}, transparent); }}
-.kpi-watermark {{
-    position: absolute; right: 16px; top: 14px;
-    font-size: 2.2rem; opacity: 0.07; pointer-events: none;
-    line-height: 1;
-}}
 .kpi-label-v3 {{
     font-size: 0.73rem; font-weight: 600; letter-spacing: 0.09em;
     text-transform: uppercase; color: {TEXT_MUT}; margin-bottom: 10px;
@@ -580,54 +572,6 @@ label {{ color: {TEXT_SEC} !important; font-size: 0.84rem !important; font-weigh
 .kv-label {{ font-size:0.79rem; color:{TEXT_MUT}; }}
 .kv-value {{ font-size:0.82rem; color:{TEXT_PRI}; font-weight:500; font-family:'JetBrains Mono',monospace; }}
 
-/* Aviso acadêmico / autoria */
-.academic-credit-card {{
-    background: linear-gradient(135deg, rgba(42,143,212,0.13), rgba(123,94,167,0.10));
-    border: 1px solid rgba(42,143,212,0.32);
-    border-left: 4px solid {ACCENT2};
-    border-radius: 14px;
-    padding: 18px 22px;
-    margin: 0 0 26px 0;
-    position: relative;
-    overflow: hidden;
-}}
-.academic-credit-card::after {{
-    content: '';
-    position: absolute;
-    right: -45px;
-    top: -55px;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: rgba(42,143,212,0.10);
-    pointer-events: none;
-}}
-.academic-credit-top {{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    color: {TEXT_PRI};
-    font-size: 0.88rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-}}
-.academic-credit-body {{
-    color: {TEXT_SEC};
-    font-size: 0.82rem;
-    line-height: 1.65;
-    max-width: 980px;
-}}
-.academic-credit-body strong {{ color: {TEXT_PRI}; font-weight: 700; }}
-.academic-credit-footer {{
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    color: {TEXT_MUT};
-    font-size: 0.74rem;
-    font-family: 'JetBrains Mono', monospace;
-}}
-
 /* Scrollbar */
 ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
 ::-webkit-scrollbar-track {{ background: {PRIMARY}; }}
@@ -658,7 +602,7 @@ label {{ color: {TEXT_SEC} !important; font-size: 0.84rem !important; font-weigh
     /* Títulos */
     .page-title      {{ font-size: 1.15rem !important; }}
     .page-subtitle   {{ font-size: 0.74rem !important; }}
-    .page-icon       {{ width: 36px !important; height: 36px !important; font-size: 1.1rem !important; }}
+    .page-accent     {{ height: 36px !important; }}
     .exec-title      {{ font-size: 1.1rem !important; }}
     .exec-subtitle   {{ font-size: 0.76rem !important; }}
 
@@ -672,7 +616,6 @@ label {{ color: {TEXT_SEC} !important; font-size: 0.84rem !important; font-weigh
     .kpi-value-v3    {{ font-size: 1.7rem !important; }}
     .kpi-label-v3    {{ font-size: 0.66rem !important; }}
     .kpi-sub-v3      {{ font-size: 0.73rem !important; }}
-    .kpi-watermark   {{ font-size: 1.6rem !important; right: 10px !important; top: 10px !important; }}
 
     /* Cards de conteúdo */
     .rg-card         {{ padding: 14px 14px !important; border-radius: 10px !important; }}
@@ -717,9 +660,6 @@ label {{ color: {TEXT_SEC} !important; font-size: 0.84rem !important; font-weigh
 
     /* Relatório executivo */
     .exec-report-header  {{ padding: 18px 20px !important; border-radius: 12px !important; }}
-
-    /* Esconde watermark em telas pequenas para não poluir */
-    .kpi-watermark {{ display: none !important; }}
 
     /* Métricas nativas */
     [data-testid="stMetricValue"] {{ font-size: 1.25rem !important; }}
@@ -835,21 +775,8 @@ def gauge_risco(score, nivel, h=240):
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "Dashboard"
 
-# Mapeamento de rótulos → chave interna
-NAV_MAP = {
-    "Dashboard":       ("DASH", "Operação"),
-    "Trechos":         ("TRC", "Operação"),
-    "Ativos":          ("ATV", "Operação"),
-    "Inspeções":       ("INSP", "Operação"),
-    "Modelo Preditivo":("ML", "Inteligência"),
-    "Compliance":      ("COMP", "Inteligência"),
-    "Auditoria":       ("AUD", "Inteligência"),
-    "ESG":             ("ESG", "Gestão"),
-    "Relatórios":      ("REL", "Gestão"),
-    "Configurações":   ("AT", "Gestão"),
-}
 CATEGORIAS = {
-    "Operação":    ["Dashboard", "Trechos", "Ativos", "Inspeções"],
+    "Operação":    ["Dashboard", "Trechos", "Ativos", "Inspeções", "Zona Crítica"],
     "Inteligência":["Modelo Preditivo", "Compliance", "Auditoria"],
     "Gestão":      ["ESG", "Relatórios", "Configurações"],
 }
@@ -876,29 +803,19 @@ with st.sidebar:
         <div style="padding:14px 20px 5px 20px; font-size:0.62rem; font-weight:700;
                     letter-spacing:0.14em; text-transform:uppercase; color:{TEXT_MUT};
                     border-top:1px solid {BORDER}; margin-top:4px;">
-            <span style="color:{cor_cat}88;">-</span> {cat}
+            <span style="color:{cor_cat}88;">▸</span> {cat}
         </div>
         """, unsafe_allow_html=True)
         for item in itens:
-            icone, _ = NAV_MAP[item]
-            ativo = (item == pagina_atual)
-            bg     = f"rgba(42,143,212,0.14)" if ativo else "transparent"
-            cor_t  = TEXT_PRI if ativo else TEXT_SEC
-            borda  = f"1px solid {ACCENT2}44" if ativo else "1px solid transparent"
-            # Usa um botão nativo do Streamlit com hack de CSS para parecer nav item
+            # Botão nativo do Streamlit; a página ativa usa o estilo primário
             if st.button(
-                f"{icone} · {item}",
+                item,
                 key=f"nav_{item}",
-                use_container_width=True,
+                width="stretch",
+                type="primary" if item == pagina_atual else "secondary",
             ):
                 st.session_state["pagina"] = item
                 st.rerun()
-            # Sobrescreve estilo do último botão via CSS inline
-            st.markdown(f"""
-            <style>
-            div[data-testid="stButton"]:has(button[kind="secondary"][data-testid="baseButton-secondary"]) {{}}
-            </style>
-            """, unsafe_allow_html=True)
 
     pagina = st.session_state["pagina"]
 
@@ -927,9 +844,8 @@ with st.sidebar:
         </div>
     </div>
     <div class="sidebar-footer">
-        MVP v0.3 · {datetime.now().strftime("%d/%m/%Y %H:%M")}<br>
-        Dados simulados — uso acadêmico<br>
-        Desenvolvido por Allan Sabá · UFPA
+        MVP v0.4 · {datetime.now().strftime("%d/%m/%Y %H:%M")}<br>
+        Dados simulados — uso demonstrativo
     </div>
     """, unsafe_allow_html=True)
 
@@ -937,11 +853,11 @@ with st.sidebar:
 #  HELPERS GLOBAIS
 # ═══════════════════════════════════════════════════════════════════════════
 
-def ph(icon, title, subtitle=""):
+def ph(title, subtitle=""):
     """Cabeçalho de página."""
     st.markdown(f"""
     <div class="page-header">
-        <div class="page-icon">{icon}</div>
+        <div class="page-accent"></div>
         <div>
             <div class="page-title">{title}</div>
             {"<div class='page-subtitle'>" + subtitle + "</div>" if subtitle else ""}
@@ -959,11 +875,10 @@ def bloco(numero, titulo, cor=ACCENT2):
     </div>
     """, unsafe_allow_html=True)
 
-def kpi_v3(label, value, sub, status_text, status_cor, variant="neutral", watermark=""):
+def kpi_v3(label, value, sub, status_text, status_cor, variant="neutral"):
     """Card KPI v3 com subtítulo e linha de status."""
     st.markdown(f"""
     <div class="kpi-v3 kpi-{variant}">
-        <div class="kpi-watermark">{watermark}</div>
         <div class="kpi-label-v3">{label}</div>
         <div class="kpi-value-v3">{value}</div>
         <div class="kpi-sub-v3">{sub}</div>
@@ -993,22 +908,19 @@ def row_kv(lbl, val):
 def chart_insight(texto):
     st.markdown(f'<div class="chart-insight">{texto}</div>', unsafe_allow_html=True)
 
-def academic_notice():
-    """Card fixo de transparência acadêmica e autoria do MVP."""
-    st.markdown(f"""
-    <div class="academic-credit-card">
-        <div class="academic-credit-top">Projeto acadêmico demonstrativo</div>
-        <div class="academic-credit-body">
-            O <strong>RailGuard AI</strong> é um MVP desenvolvido para fins acadêmicos e de demonstração técnica.
-            Os dados, inspeções, scores de risco, indicadores RCRS, alertas e métricas ESG exibidos nesta plataforma
-            são <strong>fictícios/simulados</strong> e não representam diagnósticos oficiais, ativos reais ou integração
-            com operadores ferroviários, ANTT ou outros órgãos reguladores.
-        </div>
-        <div class="academic-credit-footer">
-            Desenvolvido por Allan Sabá · Engenharia Ferroviária e Logística · UFPA
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+def flash(html, kind="info"):
+    """Guarda uma mensagem para exibir após o st.rerun() (senão ela se perde)."""
+    pendentes = st.session_state.get("_flash", [])
+    st.session_state["_flash"] = pendentes + [(kind, html)]
+
+def mostrar_flash():
+    """Exibe e consome as mensagens pendentes gravadas por flash()."""
+    render = {"info": info, "warn": warn, "danger": danger,
+              "html": lambda h: st.markdown(h, unsafe_allow_html=True)}
+    pendentes = st.session_state.get("_flash", [])
+    st.session_state["_flash"] = []
+    for kind, html in pendentes:
+        render.get(kind, info)(html)
 
 def alert_card_v3(tipo, urgencia, descricao, ativo_cod, trecho_cod, score_label, score_val, dt_str, acao):
     """Card de alerta v3 com chips de ação."""
@@ -1119,9 +1031,8 @@ def gerar_resumo_inteligente(stats, df_riscos, df_alertas):
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_dashboard():
-    ph("DB", "Centro de Controle Operacional",
-       "Visão consolidada da malha ferroviária monitorada — RailGuard AI v0.3")
-    academic_notice()
+    ph("Centro de Controle Operacional",
+       "Visão consolidada da malha ferroviária monitorada — RailGuard AI v0.4")
 
     stats     = db.get_dashboard_stats()
     df_riscos = db.get_all_riscos()
@@ -1153,31 +1064,54 @@ def page_dashboard():
     c1, c2, c3, c4, c5 = st.columns(5)
     total_oc = stats["risco_alto"] + stats["risco_critico"]
     pct_oc   = (total_oc / stats["total_inspecoes"] * 100) if stats["total_inspecoes"] > 0 else 0
+    n_zonas  = stats.get("total_zonas_criticas", 0)
 
     with c1:
         kpi_v3("Trechos Monitorados", stats["total_trechos"],
                "Malha ferroviária ativa",
-               "Normal", C_BAIXO, "neutral", "TR")
+               "Normal", C_BAIXO, "neutral")
     with c2:
         kpi_v3("Ativos Monitorados", stats["total_ativos"],
                "Infraestrutura em operação",
-               "Monitoramento contínuo", ACCENT2, "neutral", "AT")
+               "Monitoramento contínuo", ACCENT2, "neutral")
     with c3:
         kpi_v3("Inspeções Técnicas", stats["total_inspecoes"],
                "Registros de campo acumulados",
-               "Base de análise", C_BAIXO, "success", "IN")
+               "Base de análise", C_BAIXO, "success")
     with c4:
         st_cor = C_CRITICO if stats["total_alertas_abertos"] > 5 else C_MEDIO
         st_txt = "Atenção operacional" if stats["total_alertas_abertos"] > 0 else "Sem alertas"
         kpi_v3("Alertas Abertos", stats["total_alertas_abertos"],
                f"{stats['risco_critico']} requerem ação imediata",
-               st_txt, st_cor, "danger", "AL")
+               st_txt, st_cor, "danger")
     with c5:
         oc_txt = "Prioridade alta" if total_oc > 5 else "Monitorar"
         oc_cor = C_CRITICO if stats["risco_critico"] > 3 else C_ALTO
         kpi_v3("Ocorrências Críticas", total_oc,
                f"{stats['risco_critico']} críticos · {pct_oc:.0f}% da malha",
-               oc_txt, oc_cor, "warning", "Atenção")
+               oc_txt, oc_cor, "warning")
+
+    # KPI extra: Zonas Críticas (mostra abaixo dos 5 cards principais)
+    if n_zonas > 0:
+        st.markdown(f"""
+        <div style="background:rgba(230,57,70,0.10);border:1px solid rgba(230,57,70,0.40);
+                    border-left:5px solid {C_CRITICO};border-radius:12px;
+                    padding:14px 20px;margin-top:14px;
+                    display:flex;align-items:center;gap:16px;">
+            <div>
+                <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;
+                            text-transform:uppercase;color:{TEXT_MUT};">
+                    Zonas Críticas Ativas
+                </div>
+                <div style="font-size:1.4rem;font-weight:900;color:{C_CRITICO};">
+                    {n_zonas} zona{"s" if n_zonas > 1 else ""} detectada{"s" if n_zonas > 1 else ""}
+                </div>
+                <div style="font-size:0.8rem;color:{TEXT_SEC};margin-top:2px;">
+                    Concentração espacial de defeitos — acesse <b>Zona Crítica</b> no menu para análise completa
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # ══════════════════════════════════════════════════════════════════
     #  BLOCO 2 — ANÁLISE DE RISCO OPERACIONAL
@@ -1213,7 +1147,7 @@ def page_dashboard():
             legend=dict(orientation="v", x=0.98, y=0.5, font=dict(size=11, color=TEXT_SEC)),
             margin=dict(t=8, b=8, l=0, r=80),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         pct_ac = (total_oc / total_dr * 100) if total_dr > 0 else 0
         chart_insight(
             f"<strong>{total_dr}</strong> inspeções analisadas. "
@@ -1249,7 +1183,7 @@ def page_dashboard():
             yaxis=dict(showgrid=True, gridcolor=BORDER),
             xaxis=dict(showgrid=False, tickfont=dict(size=12, color=TEXT_SEC)),
         )
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width="stretch")
         maior_nivel = dr.loc[dr["Qtd"].idxmax(), "Nível"]
         chart_insight(
             f"Nível predominante: <strong>{maior_nivel}</strong>. "
@@ -1292,7 +1226,7 @@ def page_dashboard():
                 yaxis=dict(showgrid=True, gridcolor=BORDER),
                 legend=dict(orientation="h", y=1.02, font=dict(size=10)),
             )
-            st.plotly_chart(fig3, use_container_width=True)
+            st.plotly_chart(fig3, width="stretch")
             pico = int(dm["total"].max())
             mes_pico = dm.loc[dm["total"].idxmax(), "mes"]
             chart_insight(
@@ -1349,7 +1283,7 @@ def page_dashboard():
                 xaxis=dict(range=[0, 115], title="RCRS (0–100)"),
                 yaxis=dict(showgrid=False, tickfont=dict(size=11)),
             )
-            st.plotly_chart(fh, use_container_width=True)
+            st.plotly_chart(fh, width="stretch")
             n_acima75 = len(df_f[df_f["rcrs_medio"] > 75])
             n_aten    = len(df_f[(df_f["rcrs_medio"] > 50) & (df_f["rcrs_medio"] <= 75)])
             chart_insight(
@@ -1364,53 +1298,24 @@ def page_dashboard():
     with ce:
         st.markdown('<div class="rg-card"><div class="rg-card-title">Risco por Tipo de Ativo</div>',
                     unsafe_allow_html=True)
-
-        if df_riscos.empty:
-            st.markdown(
-                f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">'
-                'Dados insuficientes para o mapa de calor.</div>',
-                unsafe_allow_html=True,
-            )
-        else:
-            # Correção robusta: em alguns ambientes/versões, o DataFrame de riscos
-            # pode vir sem tipo_ativo ou com sufixos gerados por merge.
-            # Aqui normalizamos a coluna antes do groupby para evitar KeyError.
-            dhm = df_riscos.copy()
-
-            if "tipo_ativo" not in dhm.columns:
-                df_a2 = db.get_all_ativos()
-                if not df_a2.empty and {"id", "tipo_ativo"}.issubset(df_a2.columns):
-                    dhm = dhm.merge(
-                        df_a2[["id", "tipo_ativo"]].rename(columns={"id": "ativo_id"}),
-                        on="ativo_id",
-                        how="left",
-                    )
-
-            # Caso o merge tenha criado nomes como tipo_ativo_x/tipo_ativo_y,
-            # escolhe automaticamente a primeira coluna válida.
-            if "tipo_ativo" not in dhm.columns:
-                candidatos = [c for c in dhm.columns if c.startswith("tipo_ativo")]
-                if candidatos:
-                    dhm["tipo_ativo"] = dhm[candidatos[0]]
-
-            if {"tipo_ativo", "nivel_risco"}.issubset(dhm.columns):
-                dhm = dhm[["tipo_ativo", "nivel_risco"]].dropna()
+        df_a2 = db.get_all_ativos()
+        if not df_riscos.empty and not df_a2.empty:
+            # df_riscos já contém tipo_ativo da query JOIN — usar direto (sem merge)
+            # Fallback via map (merge criaria tipo_ativo_x/_y e a coluna sumiria)
+            if "tipo_ativo" in df_riscos.columns:
+                dhm = df_riscos[["tipo_ativo", "nivel_risco"]].copy()
             else:
-                dhm = pd.DataFrame(columns=["tipo_ativo", "nivel_risco"])
-
+                dhm = df_riscos[["ativo_id", "nivel_risco"]].copy()
+                _map_tipo = df_a2.set_index("id")["tipo_ativo"].to_dict()
+                dhm["tipo_ativo"] = dhm["ativo_id"].map(_map_tipo)
+            dhm = dhm.dropna(subset=["tipo_ativo", "nivel_risco"])
             if dhm.empty:
-                st.markdown(
-                    f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">'
-                    'Dados insuficientes para o mapa de calor.</div>',
-                    unsafe_allow_html=True,
-                )
+                st.markdown(f'<div style="color:{TEXT_MUT};font-size:0.82rem;padding:16px 0;text-align:center;">Dados insuficientes para o mapa de calor.</div>', unsafe_allow_html=True)
             else:
                 pivot = dhm.groupby(["tipo_ativo", "nivel_risco"]).size().unstack(fill_value=0)
                 for col in ["Baixo", "Médio", "Alto", "Crítico"]:
-                    if col not in pivot.columns:
-                        pivot[col] = 0
+                    if col not in pivot.columns: pivot[col] = 0
                 pivot = pivot[["Baixo", "Médio", "Alto", "Crítico"]]
-
                 fhm = go.Figure(go.Heatmap(
                     z=pivot.values, x=pivot.columns.tolist(), y=pivot.index.tolist(),
                     colorscale=[
@@ -1429,15 +1334,14 @@ def page_dashboard():
                     yaxis=dict(showgrid=False, autorange="reversed",
                                tickfont=dict(size=11, color=TEXT_SEC)),
                 )
-                st.plotly_chart(fhm, use_container_width=True)
-
-                tipo_mais_crit = pivot["Crítico"].idxmax() if "Crítico" in pivot.columns else "—"
+                st.plotly_chart(fhm, width="stretch")
+                tipo_mais_crit = (pivot["Crítico"].idxmax()
+                                  if pivot["Crítico"].sum() > 0 else "—")
                 chart_insight(
                     f"Tipo com maior concentração crítica: <strong>{tipo_mais_crit}</strong>. "
                     f"Valores mais altos (vermelho) indicam maior frequência de riscos elevados "
                     f"naquele tipo de ativo."
                 )
-
         st.markdown("</div>", unsafe_allow_html=True)
 
     # ══════════════════════════════════════════════════════════════════
@@ -1449,7 +1353,6 @@ def page_dashboard():
         st.markdown(f"""
         <div style="background:{CARD_BG}; border:1px solid {BORDER}; border-radius:12px;
                     padding:28px; text-align:center; color:{C_BAIXO};">
-            <div style="font-size:1.8rem; margin-bottom:8px;">OK</div>
             <div style="font-size:0.95rem; font-weight:600;">Nenhum alerta operacional ativo</div>
             <div style="font-size:0.82rem; color:{TEXT_MUT}; margin-top:4px;">
                 A malha ferroviária encontra-se dentro dos parâmetros de normalidade.
@@ -1510,11 +1413,12 @@ def page_dashboard():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_trechos():
-    ph("TR", "Trechos Ferroviários",
+    ph("Trechos Ferroviários",
        "Cadastro, monitoramento e análise dos trechos da malha ferroviária")
     tab1, tab2 = st.tabs(["Trechos Cadastrados", "Cadastrar Novo Trecho"])
 
-    with tab1:
+    # Aba em função: o `return` de banco vazio não pode impedir a aba de cadastro
+    def _aba_lista():
         df = db.get_all_trechos()
         if df.empty: info("Nenhum trecho cadastrado ainda."); return
 
@@ -1548,7 +1452,7 @@ def page_trechos():
             ))
             _pt(fc); fc.update_layout(title="Trechos por Criticidade", height=260,
                                        showlegend=False, margin=dict(t=40, b=10))
-            st.plotly_chart(fc, use_container_width=True)
+            st.plotly_chart(fc, width="stretch")
 
         with cg2:
             de = (df.groupby("ferrovia")["extensao_km"].sum()
@@ -1562,10 +1466,13 @@ def page_trechos():
             _pt(fe); fe.update_layout(title="Extensão Monitorada por Ferrovia (km)",
                                        height=260, showlegend=False,
                                        margin=dict(t=40, b=10, r=90))
-            st.plotly_chart(fe, use_container_width=True)
+            st.plotly_chart(fe, width="stretch")
 
         sdiv("TABELA DETALHADA DE TRECHOS")
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
+
+    with tab1:
+        _aba_lista()
 
     with tab2:
         with st.form("form_trecho"):
@@ -1581,23 +1488,35 @@ def page_trechos():
             estado      = c5.selectbox("Estado *",               m.ESTADOS)
             tipo_via    = c6.selectbox("Tipo de Via *",           m.TIPOS_VIA)
             criticidade = c7.selectbox("Criticidade Operacional *", m.CRITICIDADE_OPERACIONAL)
+            st.markdown(f'<div class="rg-card-title" style="margin-top:16px;">Parâmetros Operacionais (opcional)</div>',
+                        unsafe_allow_html=True)
+            c8, c9, c10 = st.columns(3)
+            vel_max = c8.number_input("Velocidade Máxima (km/h)", min_value=0.0,
+                                      step=5.0, value=None)
+            carga_eixo = c9.number_input("Carga Máxima por Eixo (t)", min_value=0.0,
+                                         step=0.5, value=None)
+            trens_dia = c10.number_input("Trens por Dia", min_value=0,
+                                         step=1, value=None)
             obs = st.text_area("Observações Técnicas",
                                placeholder="Descreva características relevantes do trecho…")
-            sub = st.form_submit_button("  Cadastrar Trecho", type="primary")
+            sub = st.form_submit_button("Cadastrar Trecho", type="primary")
 
         if sub:
-            if not codigo: danger(" Informe o código do trecho.")
-            elif km_fin <= km_ini: danger(" Km Final deve ser maior que Km Inicial.")
+            if not codigo: danger("Informe o código do trecho.")
+            elif km_fin <= km_ini: danger("Km Final deve ser maior que Km Inicial.")
             else:
                 try:
                     tid = db.insert_trecho(codigo, ferrovia, km_ini, km_fin,
-                                           estado, tipo_via, criticidade, obs)
+                                           estado, tipo_via, criticidade, obs,
+                                           velocidade_max_kmh=vel_max,
+                                           carga_max_eixo_ton=carga_eixo,
+                                           trens_por_dia=trens_dia)
                     db.insert_auditoria("INSERÇÃO", "Usuário", f"Trecho {codigo}",
                                         "Cadastrado via interface.")
-                    info(f"OK Trecho <b>{codigo}</b> cadastrado com sucesso (ID: {tid}).")
+                    flash(f"Trecho <b>{codigo}</b> cadastrado com sucesso (ID: {tid}).")
                     st.rerun()
                 except Exception as e:
-                    danger(f" Erro ao cadastrar: {e}")
+                    danger(f"Erro ao cadastrar: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1605,18 +1524,19 @@ def page_trechos():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_ativos():
-    ph("AT", "Ativos Monitorados",
+    ph("Ativos Monitorados",
        "Gestão de ativos de infraestrutura ferroviária — trilhos, dormentes, pontes, AMVs e sinalização")
     tab1, tab2 = st.tabs(["Ativos Monitorados", "Cadastrar Novo Ativo"])
 
-    with tab1:
+    # Aba em função: o `return` de banco vazio não pode impedir a aba de cadastro
+    def _aba_lista():
         df = db.get_all_ativos()
         if df.empty: info("Nenhum ativo cadastrado."); return
 
         c1, c2, c3 = st.columns(3)
         tf = c1.multiselect("Filtrar por Tipo",     m.TIPOS_ATIVO)
         cf = c2.multiselect("Filtrar por Condição", m.CONDICAO_VISUAL)
-        bf = c3.text_input("IN  Buscar por código ou ferrovia")
+        bf = c3.text_input("Buscar por código ou ferrovia")
 
         df2 = df.copy()
         if tf: df2 = df2[df2["tipo_ativo"].isin(tf)]
@@ -1639,7 +1559,7 @@ def page_ativos():
             _pt(fp); fp.update_layout(title="Tipos de Ativo", height=240,
                                        legend=dict(font=dict(size=10)),
                                        margin=dict(t=36, b=0))
-            st.plotly_chart(fp, use_container_width=True)
+            st.plotly_chart(fp, width="stretch")
 
         with cg2:
             cnt2 = df["condicao_visual"].value_counts().reset_index()
@@ -1655,7 +1575,7 @@ def page_ativos():
             ))
             _pt(fc2); fc2.update_layout(title="Condição Visual", height=240,
                                          showlegend=False, margin=dict(t=36, b=10))
-            st.plotly_chart(fc2, use_container_width=True)
+            st.plotly_chart(fc2, width="stretch")
 
         with cg3:
             di = (df.groupby("tipo_ativo")["idade_anos"].mean()
@@ -1671,16 +1591,19 @@ def page_ativos():
             _pt(fi); fi.update_layout(title="Idade Média por Tipo (anos)", height=240,
                                        showlegend=False,
                                        margin=dict(t=36, b=10, r=60))
-            st.plotly_chart(fi, use_container_width=True)
+            st.plotly_chart(fi, width="stretch")
 
         sdiv("LISTA DE ATIVOS MONITORADOS")
         st.markdown(f'<div style="font-size:0.79rem;color:{TEXT_MUT};margin-bottom:8px;">'
                     f'Exibindo {len(df2)} de {len(df)} ativos</div>', unsafe_allow_html=True)
-        st.dataframe(df2, use_container_width=True, hide_index=True)
+        st.dataframe(df2, width="stretch", hide_index=True)
+
+    with tab1:
+        _aba_lista()
 
     with tab2:
         df_t = db.get_all_trechos()
-        if df_t.empty: warn("Atenção Cadastre ao menos um trecho antes de adicionar ativos."); return
+        if df_t.empty: warn("Cadastre ao menos um trecho antes de adicionar ativos."); return
 
         opts = {f"{r['codigo']} — {r['ferrovia']}": r["id"] for _, r in df_t.iterrows()}
         with st.form("form_ativo"):
@@ -1694,22 +1617,26 @@ def page_ativos():
             idade   = c3.number_input("Idade do Ativo (anos) *", min_value=0.0, step=0.5)
             data_m  = c4.date_input("Data Última Manutenção *",
                                     value=date.today() - timedelta(days=90))
-            condicao = st.selectbox("Condição Visual *", m.CONDICAO_VISUAL)
+            c5, c6 = st.columns(2)
+            condicao = c5.selectbox("Condição Visual *", m.CONDICAO_VISUAL)
+            km_pos   = c6.number_input("Posição na Malha (km)", min_value=0.0,
+                                       step=0.001, format="%.3f", value=None,
+                                       help="Ex.: 7.200 = Km 7+200. Usado na detecção de zonas críticas.")
             obs = st.text_area("Observações Técnicas",
                                placeholder="Descreva o estado atual do ativo…")
-            sub = st.form_submit_button("  Cadastrar Ativo", type="primary")
+            sub = st.form_submit_button("Cadastrar Ativo", type="primary")
 
         if sub:
-            if not codigo: danger(" Informe o código do ativo.")
+            if not codigo: danger("Informe o código do ativo.")
             else:
                 try:
                     aid = db.insert_ativo(codigo, tipo_ativo, opts[tsel],
-                                          idade, str(data_m), condicao, obs)
+                                          idade, str(data_m), condicao, obs, km_pos)
                     db.insert_auditoria("INSERÇÃO", "Usuário", f"Ativo {codigo}",
                                         "Cadastrado via interface.")
-                    info(f"OK Ativo <b>{codigo}</b> cadastrado com sucesso (ID: {aid}).")
+                    flash(f"Ativo <b>{codigo}</b> cadastrado com sucesso (ID: {aid}).")
                     st.rerun()
-                except Exception as e: danger(f" Erro: {e}")
+                except Exception as e: danger(f"Erro: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1717,11 +1644,12 @@ def page_ativos():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_inspecoes():
-    ph("IN", "Inspeções Técnicas",
+    ph("Inspeções Técnicas",
        "Registro de inspeções de campo com cálculo automático de risco e conformidade")
     tab1, tab2 = st.tabs(["Inspeções Registradas", "Registrar Nova Inspeção"])
 
-    with tab1:
+    # Aba em função: o `return` de banco vazio não pode impedir a aba de registro
+    def _aba_lista():
         df = db.get_all_inspecoes()
         if df.empty: info("Nenhuma inspeção registrada ainda."); return
 
@@ -1743,7 +1671,7 @@ def page_inspecoes():
             ))
             _pt(ft); ft.update_layout(title="Inspeções por Método", height=240,
                                        showlegend=False, margin=dict(t=40, b=10))
-            st.plotly_chart(ft, use_container_width=True)
+            st.plotly_chart(ft, width="stretch")
 
         with cg2:
             am = df.copy()
@@ -1760,19 +1688,24 @@ def page_inspecoes():
             ))
             _pt(fm); fm.update_layout(title="Inspeções por Mês", height=240,
                                        showlegend=False, margin=dict(t=40, b=10))
-            st.plotly_chart(fm, use_container_width=True)
+            st.plotly_chart(fm, width="stretch")
 
         tf2 = st.multiselect("Filtrar por Método de Inspeção", m.TIPOS_INSPECAO)
         df3 = df if not tf2 else df[df["tipo_inspecao"].isin(tf2)]
         cols_e = [c for c in ["data_inspecao", "ativo_codigo", "tipo_ativo", "tipo_inspecao",
                                "responsavel", "fissura", "desgaste", "corrosao",
-                               "falha_fixacao", "nivel_vibracao", "temperatura"] if c in df3.columns]
+                               "falha_fixacao", "nivel_vibracao", "temperatura",
+                               "probabilidade_risco", "consequencia_risco",
+                               "score_matriz", "nivel_matriz"] if c in df3.columns]
         sdiv("REGISTROS DE INSPEÇÃO")
-        st.dataframe(df3[cols_e], use_container_width=True, hide_index=True)
+        st.dataframe(df3[cols_e], width="stretch", hide_index=True)
+
+    with tab1:
+        _aba_lista()
 
     with tab2:
         df_a = db.get_all_ativos()
-        if df_a.empty: warn("Atenção Cadastre ao menos um ativo antes de registrar inspeções."); return
+        if df_a.empty: warn("Cadastre ao menos um ativo antes de registrar inspeções."); return
 
         opts = {f"{r['codigo']} — {r['tipo_ativo']} ({r['trecho_codigo']})": r["id"]
                 for _, r in df_a.iterrows()}
@@ -1801,13 +1734,26 @@ def page_inspecoes():
             temp = c9.number_input("Temperatura (°C)", min_value=-10.0,
                                     max_value=80.0, value=25.0, step=0.5)
             carg = c10.slider("Carga Operacional (%)", 0.0, 100.0, 50.0, 1.0)
+
+            st.markdown(f'<div class="rg-card-title" style="margin-top:16px;">Matriz P×C — ISO 31000 (opcional)</div>',
+                        unsafe_allow_html=True)
+            c11, c12 = st.columns(2)
+            prob = c11.selectbox("Probabilidade (P)", [None, 1, 2, 3, 4, 5],
+                                 format_func=lambda v: "Não avaliada" if v is None
+                                 else f"{v} — {m.PROBABILIDADE_ESCALA[v]}")
+            cons = c12.selectbox("Consequência (C)", [None, 1, 2, 3, 4, 5],
+                                 format_func=lambda v: "Não avaliada" if v is None
+                                 else f"{v} — {m.CONSEQUENCIA_ESCALA[v]}")
+
             obs  = st.text_area("Observações Técnicas")
             img  = st.file_uploader("Evidência Fotográfica (opcional)",
                                     type=["jpg", "jpeg", "png"])
-            sub  = st.form_submit_button("  Registrar Inspeção", type="primary")
+            sub  = st.form_submit_button("Registrar Inspeção", type="primary")
 
         if sub:
-            if not resp: danger(" Informe o responsável técnico.")
+            if not resp: danger("Informe o responsável técnico.")
+            elif (prob is None) != (cons is None):
+                danger("Para usar a Matriz P×C informe Probabilidade e Consequência, ou deixe ambas em branco.")
             else:
                 try:
                     aid2   = opts[asel]
@@ -1815,12 +1761,15 @@ def page_inspecoes():
                     if img:
                         sd = os.path.join(os.path.dirname(__file__), "data", "imagens")
                         os.makedirs(sd, exist_ok=True)
-                        ipath = os.path.join(sd, img.name)
+                        nome = f"{datetime.now():%Y%m%d%H%M%S}_{os.path.basename(img.name)}"
+                        ipath = os.path.join(sd, nome)
                         with open(ipath, "wb") as f: f.write(img.read())
 
                     iid = db.insert_inspecao(aid2, str(data_i), resp, tipo_i,
                                               fiss, desg, corr, falh,
-                                              vibr, temp, carg, obs, ipath)
+                                              vibr, temp, carg, obs, ipath,
+                                              probabilidade_risco=prob,
+                                              consequencia_risco=cons)
                     ad = db.get_ativo_by_id(aid2)
                     td = db.get_trecho_by_id(ad["trecho_id"])
                     try:
@@ -1847,13 +1796,22 @@ def page_inspecoes():
                                         f"Score:{sc:.0f} RCRS:{rc:.0f}")
 
                     cor_nv = RISK_C.get(nv, TEXT_SEC)
-                    st.markdown(f"""
+                    if prob is not None:
+                        sc_pc, nv_pc = re_.calcular_risco_matriz(prob, cons)
+                        cor_pc = m.MATRIZ_CORES.get(nv_pc, TEXT_SEC)
+                        # Sem quebra de linha inicial: uma linha em branco encerraria o bloco HTML do Markdown
+                        bloco_pc = (f'<div style="font-size:1.5rem;font-weight:800;color:{cor_pc};">{nv_pc}</div>'
+                                    f'<div style="font-size:0.8rem;color:{TEXT_SEC};">P={prob} × C={cons} = {sc_pc}/25</div>')
+                    else:
+                        bloco_pc = (f'<div style="font-size:1.5rem;font-weight:800;color:{TEXT_MUT};">—</div>'
+                                    f'<div style="font-size:0.8rem;color:{TEXT_SEC};">Não avaliada</div>')
+                    flash(f"""
                     <div style="background:{CARD_BG};border:1px solid {cor_nv}55;
-                                border-radius:14px;padding:22px;margin-top:18px;">
+                                border-radius:14px;padding:22px;margin-bottom:18px;">
                         <div style="font-size:1rem;font-weight:700;color:{cor_nv};margin-bottom:14px;">
-                            OK Inspeção registrada com sucesso
+                            Inspeção registrada com sucesso — {ad['codigo']}
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:18px;">
                             <div>
                                 <div style="font-size:0.68rem;color:{TEXT_MUT};text-transform:uppercase;
                                             letter-spacing:0.08em;">Risco Operacional</div>
@@ -1868,6 +1826,11 @@ def page_inspecoes():
                             </div>
                             <div>
                                 <div style="font-size:0.68rem;color:{TEXT_MUT};text-transform:uppercase;
+                                            letter-spacing:0.08em;">Matriz P×C</div>
+                                {bloco_pc}
+                            </div>
+                            <div>
+                                <div style="font-size:0.68rem;color:{TEXT_MUT};text-transform:uppercase;
                                             letter-spacing:0.08em;">ID do Registro</div>
                                 <div style="font-size:1.5rem;font-weight:800;color:{ACCENT2};">#{iid}</div>
                                 <div style="font-size:0.8rem;color:{TEXT_SEC};">{str(data_i)}</div>
@@ -1878,9 +1841,9 @@ def page_inspecoes():
                             <strong style="color:{TEXT_PRI};">Recomendação:</strong> {rec}
                         </div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """, kind="html")
                     st.rerun()
-                except Exception as e: danger(f" Erro ao registrar: {e}")
+                except Exception as e: danger(f"Erro ao registrar: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1888,7 +1851,7 @@ def page_inspecoes():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_ml():
-    ph("ML", "Modelo Preditivo de Risco",
+    ph("Modelo Preditivo de Risco",
        "RandomForestClassifier — previsão de nível de risco operacional por ativo ferroviário")
 
     if "modelo_rf" not in st.session_state:
@@ -1915,7 +1878,7 @@ def page_ml():
     fonte = st.session_state.get("fonte_ml", "Sintéticos")
 
     t1, t2, t3 = st.tabs(
-        ["  Desempenho do Modelo", "DB  Importância de Variáveis", "  Simulação de Predição"]
+        ["Desempenho do Modelo", "Importância de Variáveis", "Simulação de Predição"]
     )
 
     with t1:
@@ -1941,13 +1904,13 @@ def page_ml():
                 st.markdown(row_kv(l, v), unsafe_allow_html=True)
             st.markdown(f"""
             <div class="info-box" style="margin-top:14px;">
-                 <b>Roadmap v0.4:</b> Integração com SHAP para explicabilidade
+                <b>Roadmap v0.7:</b> Integração com SHAP para explicabilidade
                 baseada em valores de Shapley.
                 Use <code>shap.TreeExplainer(model)</code> em <code>ml_model.py</code>.
             </div>
             """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
-            if st.button("  Retreinar Modelo", type="secondary"):
+            if st.button("Retreinar Modelo", type="secondary"):
                 del st.session_state["modelo_rf"]
                 st.rerun()
 
@@ -1974,7 +1937,7 @@ def page_ml():
                      line_color=TEXT_MUT, line_width=1.5,
                      annotation_text="Média", annotation_font_color=TEXT_MUT,
                      annotation_font_size=10)
-        st.plotly_chart(ff, use_container_width=True)
+        st.plotly_chart(ff, width="stretch")
         top1 = fi.iloc[0]["Variável"]; top2 = fi.iloc[1]["Variável"]
         chart_insight(
             f"As variáveis mais determinantes para a classificação de risco são "
@@ -2001,7 +1964,7 @@ def page_ml():
             c9, c10 = st.columns(2)
             pv  = c9.slider("Nível de Vibração (0–10)", 0.0, 10.0, 3.0, 0.1)
             pcg = c10.slider("Carga Operacional (%)",   0.0, 100.0, 50.0, 1.0)
-            subp = st.form_submit_button("  Executar Predição", type="primary")
+            subp = st.form_submit_button("Executar Predição", type="primary")
         st.markdown("</div>", unsafe_allow_html=True)
 
         if subp:
@@ -2019,7 +1982,7 @@ def page_ml():
 
             cg, cp, cx = st.columns([1, 1.2, 1.4])
             with cg:
-                st.plotly_chart(gauge_risco(sm, nm), use_container_width=True)
+                st.plotly_chart(gauge_risco(sm, nm), width="stretch")
             with cp:
                 labels = ["Baixo", "Médio", "Alto", "Crítico"]
                 cores_p = [C_BAIXO, C_MEDIO, C_ALTO, C_CRITICO]
@@ -2036,7 +1999,7 @@ def page_ml():
                     margin=dict(t=40, b=10),
                     yaxis=dict(range=[0, 118]),
                 )
-                st.plotly_chart(fp2, use_container_width=True)
+                st.plotly_chart(fp2, width="stretch")
                 st.markdown(f"""
                 <div style="text-align:center;margin-top:-6px;">
                     <div style="font-size:0.68rem;color:{TEXT_MUT};text-transform:uppercase;
@@ -2087,11 +2050,12 @@ def page_ml():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_compliance():
-    ph("CP", "Compliance & RCRS",
+    ph("Compliance & RCRS",
        "Índice de conformidade regulatória e risco sistêmico — Railway Compliance Risk Score")
     t1, t2 = st.tabs(["Visão Geral de Conformidade", "Calculadora RCRS"])
 
-    with t1:
+    # Aba em função: o `return` de banco vazio não pode esconder a calculadora
+    def _aba_visao_geral():
         df_r = db.get_all_riscos()
         if df_r.empty: info("Nenhum score RCRS calculado ainda."); return
 
@@ -2122,7 +2086,7 @@ def page_compliance():
             _pt(frc); frc.update_layout(height=300, showlegend=True,
                 legend=dict(font=dict(size=10), orientation="v"),
                 margin=dict(t=10, b=10, l=0, r=80))
-            st.plotly_chart(frc, use_container_width=True)
+            st.plotly_chart(frc, width="stretch")
             n_nc = clc.get("Não conformidade potencial", 0) + clc.get("Crítico", 0)
             chart_insight(
                 f"<strong>{n_nc}</strong> ativos com não conformidade potencial ou crítica. "
@@ -2153,7 +2117,7 @@ def page_compliance():
                 xaxis=dict(title="Risco Operacional (0–100)", range=[0, 115]),
                 yaxis=dict(title="RCRS (0–100)", range=[0, 115]),
             )
-            st.plotly_chart(fsc, use_container_width=True)
+            st.plotly_chart(fsc, width="stretch")
             chart_insight(
                 "Cada ponto representa um ativo. Pontos no quadrante superior direito "
                 "(alto risco e alto RCRS) são prioridade máxima de intervenção. "
@@ -2192,6 +2156,9 @@ def page_compliance():
             </div>
             """, unsafe_allow_html=True)
 
+    with t1:
+        _aba_visao_geral()
+
     with t2:
         st.markdown('<div class="rg-card"><div class="rg-card-title">Calculadora RCRS Interativa</div>',
                     unsafe_allow_html=True)
@@ -2205,7 +2172,7 @@ def page_compliance():
             c5, c6 = st.columns(2)
             re2 = c5.slider("Risco ESG (0–100)", 0.0, 100.0, 30.0)
             cd2 = c6.slider("Confiabilidade do Dado (%)", 0.0, 100.0, 80.0)
-            sub_rc = st.form_submit_button("  Calcular RCRS", type="primary")
+            sub_rc = st.form_submit_button("Calcular RCRS", type="primary")
         st.markdown("</div>", unsafe_allow_html=True)
 
         if sub_rc:
@@ -2213,7 +2180,7 @@ def page_compliance():
             cor_cls = m.RCRS_COLORS.get(cls, TEXT_SEC)
             cg2, cr2 = st.columns([1, 2])
             with cg2:
-                st.plotly_chart(gauge_risco(rc, cls), use_container_width=True)
+                st.plotly_chart(gauge_risco(rc, cls), width="stretch")
             with cr2:
                 st.markdown(f"""
                 <div style="background:{CARD_BG};border:1px solid {cor_cls}55;
@@ -2241,7 +2208,7 @@ def page_compliance():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_auditoria():
-    ph("AU", "Auditoria & Rastreabilidade",
+    ph("Auditoria & Rastreabilidade",
        "Registro imutável de todas as operações realizadas na plataforma")
 
     df = db.get_all_auditoria()
@@ -2269,13 +2236,13 @@ def page_auditoria():
         margin=dict(t=40, b=10),
         legend=dict(orientation="h", y=-0.3, font=dict(size=11)),
     )
-    st.plotly_chart(fa, use_container_width=True)
+    st.plotly_chart(fa, width="stretch")
 
     sdiv("FILTROS E BUSCA")
     c1, c2, c3 = st.columns(3)
     tf = c1.multiselect("Tipo de Ação",  df["tipo_acao"].unique().tolist())
     uf = c2.multiselect("Usuário",       df["usuario"].unique().tolist())
-    bf = c3.text_input("IN  Buscar em item ou descrição")
+    bf = c3.text_input("Buscar em item ou descrição")
 
     df2 = df.copy()
     if tf:  df2 = df2[df2["tipo_acao"].isin(tf)]
@@ -2289,7 +2256,7 @@ def page_auditoria():
                 f'Exibindo {len(df2)} de {len(df)} registros</div>', unsafe_allow_html=True)
     st.dataframe(
         df2[["data_hora", "tipo_acao", "usuario", "item_alterado", "descricao"]].head(100),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
 
@@ -2298,12 +2265,12 @@ def page_auditoria():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_esg():
-    ph("ESG", "Indicadores ESG",
+    ph("Indicadores ESG",
        "Ambiental, Social e Governança — sustentabilidade e impacto da infraestrutura ferroviária")
 
     st.markdown(f"""
     <div class="info-box">
-         <b>Nota metodológica:</b> Os indicadores ESG são calculados com modelos parametrizados
+        <b>Nota metodológica:</b> Os indicadores ESG são calculados com modelos parametrizados
         e dados simulados. Em ambiente produtivo devem ser complementados com inventários GHG
         certificados, relatórios socioambientais e auditorias independentes.
     </div>
@@ -2336,7 +2303,7 @@ def page_esg():
             legend=dict(orientation="h", y=1.08),
             margin=dict(t=20, b=10),
         )
-        st.plotly_chart(fe, use_container_width=True)
+        st.plotly_chart(fe, width="stretch")
 
     with cb:
         sdiv("PRIORIDADE ESG")
@@ -2352,7 +2319,7 @@ def page_esg():
         _pt(fp); fp.update_layout(height=220, showlegend=True,
                                     legend=dict(font=dict(size=10)),
                                     margin=dict(t=10, b=10, l=0, r=60))
-        st.plotly_chart(fp, use_container_width=True)
+        st.plotly_chart(fp, width="stretch")
 
         for ind, lbl, cor in zip(inds, lbls, cors):
             val = df[ind].mean(); pct = min(val, 100)
@@ -2411,7 +2378,7 @@ def page_esg():
         df[["trecho_codigo", "ferrovia", "estado", "risco_ambiental",
             "impacto_paralisacao", "eficiencia_manutencao", "prioridade_esg",
             "emissao_co2_estimada", "area_impacto_km2"]],
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
 
@@ -2420,12 +2387,14 @@ def page_esg():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_relatorios():
-    ph("REL", "Relatórios Executivos",
+    ph("Relatórios Executivos",
        "Relatórios técnicos de compliance com evidências, scores e rastreabilidade completa")
 
     t1, t2 = st.tabs(["Relatório por Ativo", "Relatório por Trecho"])
 
-    with t1:
+    # Aba em função: os `return` antecipados (ex.: botão não clicado)
+    # não podem impedir a renderização da aba de trecho
+    def _aba_ativo():
         df_a = db.get_all_ativos()
         if df_a.empty: info("Nenhum ativo cadastrado."); return
 
@@ -2437,12 +2406,12 @@ def page_relatorios():
         sel = cx.selectbox("Selecionar Ativo para Relatório", list(opts.keys()))
         with cy:
             st.markdown("<br>", unsafe_allow_html=True)
-            gerar = st.button("CP  Gerar Relatório", type="primary")
+            gerar = st.button("Gerar Relatório", type="primary")
         if not gerar: return
 
         ativo_id = opts[sel]
         rel = rp.gerar_relatorio_ativo(ativo_id)
-        if not rel: danger(" Ativo não encontrado."); return
+        if not rel: danger("Ativo não encontrado."); return
 
         av = rel["ativo"]
         tr = rel["trecho"]
@@ -2486,7 +2455,7 @@ def page_relatorios():
                 <div>
                     <div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.13em;
                                 color:{TEXT_MUT};margin-bottom:7px;">
-                        RELATÓRIO TÉCNICO DE COMPLIANCE · RailGuard AI v0.3
+                        RELATÓRIO TÉCNICO DE COMPLIANCE · RailGuard AI v0.4
                         · {rel['data_relatorio']}
                     </div>
                     <div class="exec-title">{av['tipo_ativo']} — {av['codigo']}</div>
@@ -2535,8 +2504,8 @@ def page_relatorios():
             sc_rc = float(ur["score_rcrs"]); cl_rc = ur["classificacao_rcrs"]
             cga, cex = st.columns([1, 1.5])
             with cga:
-                st.plotly_chart(gauge_risco(sc_r, nv_r, 210), use_container_width=True)
-                st.plotly_chart(gauge_risco(sc_rc, cl_rc, 210), use_container_width=True)
+                st.plotly_chart(gauge_risco(sc_r, nv_r, 210), width="stretch")
+                st.plotly_chart(gauge_risco(sc_rc, cl_rc, 210), width="stretch")
             with cex:
                 if not rel["inspecoes"].empty:
                     ui = rel["inspecoes"].iloc[0]
@@ -2604,22 +2573,25 @@ def page_relatorios():
                                    "fissura", "desgaste", "corrosao", "falha_fixacao",
                                    "nivel_vibracao", "temperatura", "carga_operacional"]
                       if c in rel["inspecoes"].columns]
-            st.dataframe(rel["inspecoes"][cols_i], use_container_width=True, hide_index=True)
+            st.dataframe(rel["inspecoes"][cols_i], width="stretch", hide_index=True)
 
         sdiv("LOG DE AUDITORIA")
         if not rel["auditoria"].empty:
             st.dataframe(
                 rel["auditoria"][["data_hora", "tipo_acao", "usuario", "descricao"]],
-                use_container_width=True, hide_index=True)
+                width="stretch", hide_index=True)
 
         sdiv("EXPORTAR RELATÓRIO")
         csv_out = rp.relatorio_para_csv(rel)
         st.download_button(
-            "⬇  Exportar Relatório Completo (CSV)",
+            "Exportar Relatório Completo (CSV)",
             data=csv_out.encode("utf-8"),
             file_name=f"railguard_{av['codigo']}_{date.today()}.csv",
             mime="text/csv",
         )
+
+    with t1:
+        _aba_ativo()
 
     with t2:
         df_t = db.get_all_trechos()
@@ -2631,7 +2603,7 @@ def page_relatorios():
         sel_t = cx2.selectbox("Selecionar Trecho", list(opts_t.keys()))
         with cy2:
             st.markdown("<br>", unsafe_allow_html=True)
-            gerar_t = st.button("CP  Gerar Relatório de Trecho", type="primary")
+            gerar_t = st.button("Gerar Relatório de Trecho", type="primary")
         if not gerar_t: return
 
         tid  = opts_t[sel_t]
@@ -2648,7 +2620,7 @@ def page_relatorios():
         <div class="exec-report-header">
             <div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.13em;
                         color:{TEXT_MUT};margin-bottom:7px;">
-                RELATÓRIO DE TRECHO · RailGuard AI v0.3
+                RELATÓRIO DE TRECHO · RailGuard AI v0.4
             </div>
             <div class="exec-title">Trecho {tr2['codigo']} — {tr2['ferrovia']}</div>
             <div class="exec-subtitle">
@@ -2677,7 +2649,7 @@ def page_relatorios():
             st.dataframe(
                 da2[["codigo", "tipo_ativo", "idade_anos",
                      "data_ultima_manutencao", "condicao_visual"]],
-                use_container_width=True, hide_index=True)
+                width="stretch", hide_index=True)
 
         if not de2t.empty:
             sdiv("INDICADORES ESG")
@@ -2690,7 +2662,7 @@ def page_relatorios():
         sdiv("EXPORTAR")
         csv_t2 = rp.relatorio_trecho_para_csv(tid)
         st.download_button(
-            "⬇  Exportar Relatório do Trecho (CSV)",
+            "Exportar Relatório do Trecho (CSV)",
             data=csv_t2.encode("utf-8"),
             file_name=f"railguard_trecho_{tr2['codigo']}_{date.today()}.csv",
             mime="text/csv",
@@ -2702,7 +2674,7 @@ def page_relatorios():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def page_config():
-    ph("AT", "Configurações do Sistema",
+    ph("Configurações do Sistema",
        "Informações técnicas, status da plataforma, migração e manutenção")
 
     c1, c2 = st.columns(2)
@@ -2711,7 +2683,7 @@ def page_config():
                     unsafe_allow_html=True)
         for l, v in [
             ("Plataforma",     "RailGuard AI"),
-            ("Versão",         "0.3 MVP"),
+            ("Versão",         "0.4 MVP"),
             ("Framework",      "Streamlit + Python 3.11+"),
             ("Banco de Dados", "SQLite (migração PostgreSQL prevista)"),
             ("ML Engine",      "RandomForestClassifier · scikit-learn"),
@@ -2738,10 +2710,10 @@ def page_config():
         st.markdown("</div>", unsafe_allow_html=True)
 
     warn("<b>Aviso:</b> MVP acadêmico/demonstrativo. Dados simulados. "
-         "Sem integração com ANTT, ANAC ou operadores ferroviários reais.")
+         "Sem integração com a ANTT ou com operadores ferroviários reais.")
 
     sdiv("GUIA DE MIGRAÇÃO PARA POSTGRESQL")
-    with st.expander("  Ver instruções completas"):
+    with st.expander("Ver instruções completas"):
         st.code("""
 # 1. Instalar dependências
 pip install psycopg2-binary sqlalchemy
@@ -2757,17 +2729,18 @@ def get_connection():
 # 4. DDL: AUTOINCREMENT → SERIAL, TIMESTAMP → TIMESTAMPTZ DEFAULT NOW()
 
 # 5. Migrar dados existentes
-for tabela in ["trechos","ativos","inspecoes","riscos","alertas","auditoria","indicadores_esg"]:
+for tabela in ["trechos","ativos","inspecoes","riscos","alertas","auditoria",
+               "indicadores_esg","zonas_criticas"]:
     df = pd.read_sql_query(f"SELECT * FROM {tabela}", sqlite_conn)
     df.to_sql(tabela, pg_engine, if_exists="append", index=False)
-    print(f"OK {tabela}: {len(df)} registros migrados")
+    print(f"{tabela}: {len(df)} registros migrados")
         """, language="python")
 
     sdiv("RECARREGAR DADOS DE DEMONSTRAÇÃO")
-    warn("Atenção Esta ação apaga todos os dados atuais e recarrega os dados simulados de demonstração.")
+    warn("Esta ação apaga todos os dados atuais e recarrega os dados simulados de demonstração.")
     cb_, _ = st.columns([1, 3])
     with cb_:
-        if st.button("  Recarregar Demonstração", type="secondary"):
+        if st.button("Recarregar Demonstração", type="secondary"):
             if os.path.exists(db.DB_PATH):
                 os.remove(db.DB_PATH)
             db.init_database()
@@ -2775,8 +2748,537 @@ for tabela in ["trechos","ativos","inspecoes","riscos","alertas","auditoria","in
             for k in ["modelo_rf", "fonte_ml", "ml_acc", "ml_report"]:
                 if k in st.session_state:
                     del st.session_state[k]
-            info("OK Dados de demonstração recarregados com sucesso.")
+            flash("Dados de demonstração recarregados com sucesso.")
             st.rerun()
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  PAGE — ZONA CRÍTICA (v0.4) — Estudo de Caso Heavy Haul
+# ═══════════════════════════════════════════════════════════════════════════
+
+def page_zona_critica():
+    ph("Análise de Zona Crítica",
+       "Estudo de Caso Heavy Haul · Clustering espacial de defeitos · Matriz P×C · Causa raiz em cascata")
+
+    # Banner de contexto do estudo de caso
+    st.markdown(f"""
+    <div style="background:linear-gradient(135deg,rgba(230,57,70,0.12),rgba(244,123,53,0.08));
+                border:1px solid rgba(230,57,70,0.35);border-left:5px solid {C_CRITICO};
+                border-radius:14px;padding:20px 24px;margin-bottom:24px;">
+        <div style="display:flex;align-items:flex-start;gap:16px;">
+            <div>
+                <div style="font-size:1rem;font-weight:800;color:{TEXT_PRI};margin-bottom:6px;">
+                    Estudo de Caso — Trecho Heavy Haul (TRC-CASO)
+                </div>
+                <div style="font-size:0.84rem;color:{TEXT_SEC};line-height:1.7;">
+                    Trecho de <strong>10 km</strong> · Carga máxima: <strong>32,5 t/eixo</strong> ·
+                    Velocidade autorizada: <strong>60 km/h</strong> (operacional: 45 km/h) ·
+                    <strong>18 trens/dia</strong> · 4.500 t/trem<br>
+                    Inspeção identificou <strong>Zona Crítica</strong> entre
+                    <strong>Km 7+100 e Km 7+300</strong> (200 metros) com
+                    <strong>5 tipos de defeito espacialmente correlacionados</strong>.
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── KPIs do estudo de caso ────────────────────────────────────────
+    bloco("1", "RESUMO DA INSPEÇÃO — NÃO CONFORMIDADES QUANTIFICADAS", C_CRITICO)
+
+    nc_data = [
+        ("Dormentes",   2000, 80,  "80/2000 (4,0%)",  "5 consecutivos severos no Km 7+200 em curva R=500m", C_CRITICO),
+        ("Fixações",    4000, 100, "100/4000 (2,5%)", "10 consecutivas defeituosas entre Km 7+150–7+250",   C_CRITICO),
+        ("Trilhos",    "20km", 6,  "6 pontos",         "T4 (Km 6+700): desgaste severo em curva R=600m",     C_ALTO),
+        ("AMV",          10,  1,  "1/10 (10%)",       "AMV-04 (Km 7+180): desgaste + irregularidade roda/trilho", C_ALTO),
+        ("Drenagem",     40,  5,  "5/40 (12,5%)",     "Obstrução severa no Km 7+300 — acúmulo de água",    C_CRITICO),
+        ("Sinalização",  30,  2,  "2/30 (6,7%)",      "Km 7+100: perda de visibilidade + falha de iluminação", C_MEDIO),
+    ]
+
+    cols_nc = st.columns(3)
+    for i, (tipo, total, nc, pct, obs, cor) in enumerate(nc_data):
+        with cols_nc[i % 3]:
+            st.markdown(f"""
+            <div style="background:{CARD_BG};border:1px solid {cor}55;
+                        border-top:3px solid {cor};border-radius:12px;
+                        padding:16px 18px;margin-bottom:14px;">
+                <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;
+                            letter-spacing:0.09em;color:{TEXT_MUT};margin-bottom:6px;">
+                    {tipo}
+                </div>
+                <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+                    <span style="font-size:1.8rem;font-weight:900;color:{cor};">{nc}</span>
+                    <span style="font-size:0.82rem;color:{TEXT_MUT};">NC de {total} inspecionados</span>
+                </div>
+                <div style="font-size:0.72rem;color:{TEXT_SEC};background:{SURFACE};
+                            padding:4px 10px;border-radius:20px;display:inline-block;
+                            margin-bottom:8px;font-family:'JetBrains Mono',monospace;">
+                    {pct}
+                </div>
+                <div style="font-size:0.76rem;color:{TEXT_MUT};line-height:1.5;">{obs}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # ── Linha do tempo espacial ───────────────────────────────────────
+    bloco("2", "LINHA DO TEMPO ESPACIAL — DISTRIBUIÇÃO DOS DEFEITOS NO KM", C_ALTO)
+
+    # Cria gráfico de dispersão por km com tipo de ativo
+    df_at = db.get_all_ativos()
+    df_r  = db.get_all_riscos()
+
+    df_caso = df_at[df_at["trecho_codigo"] == "TRC-CASO"].copy() if "trecho_codigo" in df_at.columns else pd.DataFrame()
+
+    if not df_caso.empty and "km_posicao" in df_caso.columns:
+        df_caso = df_caso[df_caso["km_posicao"].notna()].copy()
+
+        # Junta com scores
+        if not df_r.empty:
+            ult_r = (df_r.sort_values("data_calculo", ascending=False)
+                     .drop_duplicates(subset=["ativo_id"], keep="first")
+                     [["ativo_id", "score_risco", "nivel_risco"]])
+            df_caso = df_caso.merge(
+                ult_r.rename(columns={"ativo_id": "id"}), on="id", how="left")
+        if "score_risco" not in df_caso.columns:
+            df_caso["score_risco"] = 50.0
+        if "nivel_risco" not in df_caso.columns:
+            df_caso["nivel_risco"] = "Médio"
+
+        cores_por_nivel = {
+            "Baixo": C_BAIXO, "Médio": C_MEDIO, "Alto": C_ALTO, "Crítico": C_CRITICO
+        }
+
+        fig_scatter = go.Figure()
+
+        # Zona crítica — área sombreada (limites vindos do banco; fallback no estudo de caso)
+        df_zc_caso = db.get_all_zonas_criticas()
+        df_zc_caso = df_zc_caso[df_zc_caso["trecho_codigo"] == "TRC-CASO"]
+        faixas_zc = (list(zip(df_zc_caso["km_inicio"], df_zc_caso["km_fim"]))
+                     if not df_zc_caso.empty else [(7.1, 7.3)])
+        for km_a, km_b in faixas_zc:
+            fig_scatter.add_vrect(
+                x0=km_a, x1=km_b,
+                fillcolor="rgba(230,57,70,0.12)",
+                line_color="rgba(230,57,70,0.5)",
+                line_width=2,
+                annotation_text="ZONA CRÍTICA",
+                annotation_position="top left",
+                annotation_font_color=C_CRITICO,
+                annotation_font_size=11,
+            )
+
+        # Pontos dos ativos
+        for nivel, cor in cores_por_nivel.items():
+            df_n = df_caso[df_caso["nivel_risco"] == nivel]
+            if df_n.empty:
+                continue
+            fig_scatter.add_trace(go.Scatter(
+                x=df_n["km_posicao"],
+                y=df_n["score_risco"],
+                mode="markers+text",
+                name=nivel,
+                text=df_n["codigo"],
+                textposition="top center",
+                textfont=dict(size=9, color=TEXT_MUT, family="JetBrains Mono"),
+                marker=dict(
+                    size=df_n["score_risco"].fillna(40) / 6 + 8,
+                    color=cor, opacity=0.9,
+                    line=dict(color=PRIMARY, width=1.5),
+                    symbol="circle",
+                ),
+                hovertemplate=(
+                    "<b>%{text}</b><br>"
+                    "Km: %{x:.3f}<br>"
+                    "Score Risco: %{y:.0f}/100<br>"
+                    f"Nível: {nivel}<extra></extra>"
+                ),
+            ))
+
+        _pt(fig_scatter)
+        fig_scatter.update_layout(
+            title="Distribuição de Risco por Posição Quilométrica",
+            height=360,
+            xaxis=dict(title="Posição (km)", showgrid=True, gridcolor=BORDER, dtick=0.5),
+            yaxis=dict(title="Score de Risco (0–100)", range=[0, 115]),
+            margin=dict(t=40, b=30, l=10, r=10),
+            legend=dict(orientation="h", y=1.08, font=dict(size=11)),
+        )
+        # Linha de referência crítico
+        fig_scatter.add_hline(y=75, line_dash="dot", line_color=C_CRITICO,
+                               line_width=1.5, opacity=0.7,
+                               annotation_text="Limiar Crítico",
+                               annotation_font_color=C_CRITICO,
+                               annotation_font_size=10)
+        fig_scatter.add_hline(y=50, line_dash="dot", line_color=C_MEDIO,
+                               line_width=1, opacity=0.5,
+                               annotation_text="Limiar Alto",
+                               annotation_font_color=C_MEDIO,
+                               annotation_font_size=10)
+
+        st.plotly_chart(fig_scatter, width="stretch")
+        chart_insight(
+            "Cada ponto representa um ativo. O tamanho é proporcional ao score de risco. "
+            "A área sombreada em vermelho delimita a <strong>Zona Crítica (Km 7+100–7+300)</strong> "
+            "onde 5 tipos de defeito estão espacialmente correlacionados. "
+            "Pontos acima da linha pontilhada vermelha exigem intervenção imediata."
+        )
+    else:
+        info("Rode a carga de demonstração com dados do estudo de caso para visualizar o gráfico.")
+
+    # ── Matriz P×C ────────────────────────────────────────────────────
+    bloco("3", "MATRIZ PROBABILIDADE × CONSEQUÊNCIA — METODOLOGIA ISO 31000", C_COMP)
+
+    col_m, col_t = st.columns([1.2, 1])
+
+    with col_m:
+        # Monta a matriz visual 5×5
+        # numpy already imported as np
+        matrix = np.zeros((5, 5), dtype=int)
+        for p in range(5):
+            for c in range(5):
+                matrix[p, c] = (p+1) * (c+1)
+
+        cores_mtz = []
+        for p in range(5):
+            row_c = []
+            for c in range(5):
+                v = matrix[p, c]
+                if v <= 4:    row_c.append("#0CB87A")
+                elif v <= 9:  row_c.append("#F4A62A")
+                elif v <= 16: row_c.append("#F47B35")
+                else:          row_c.append("#E63946")
+            cores_mtz.append(row_c)
+
+        # Heatmap personalizado da matriz
+        fig_mtz = go.Figure(data=go.Heatmap(
+            z=matrix,
+            x=["C1\nInsignificante", "C2\nPequena", "C3\nModerada",
+               "C4\nGrave", "C5\nCatastrófica"],
+            y=["P1\nMuito Baixa", "P2\nBaixa", "P3\nMédia",
+               "P4\nAlta", "P5\nMuito Alta"],
+            colorscale=[
+                [0,    "rgba(12,184,122,0.8)"],
+                [0.16, "rgba(244,166,42,0.8)"],
+                [0.36, "rgba(244,123,53,0.8)"],
+                [0.64, "rgba(230,57,70,0.9)"],
+                [1.0,  "rgba(180,20,30,1.0)"],
+            ],
+            text=matrix,
+            texttemplate="%{text}",
+            textfont=dict(size=14, color="white", family="Inter"),
+            showscale=False,
+            hovertemplate="P%{y} × C%{x} = <b>%{z}</b><extra></extra>",
+        ))
+        _pt(fig_mtz)
+        fig_mtz.update_layout(
+            title="Matriz P×C (Probabilidade × Consequência)",
+            height=320,
+            margin=dict(t=40, b=10, l=10, r=10),
+            xaxis=dict(showgrid=False, side="top",
+                       tickfont=dict(size=10, color=TEXT_SEC)),
+            yaxis=dict(showgrid=False, autorange="reversed",
+                       tickfont=dict(size=10, color=TEXT_SEC)),
+        )
+        st.plotly_chart(fig_mtz, width="stretch")
+        st.markdown(f"""
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <span style="background:rgba(12,184,122,0.2);color:{C_BAIXO};border:1px solid {C_BAIXO}55;
+                         padding:3px 12px;border-radius:20px;font-size:0.73rem;font-weight:700;">
+                1–4 Baixo
+            </span>
+            <span style="background:rgba(244,166,42,0.2);color:{C_MEDIO};border:1px solid {C_MEDIO}55;
+                         padding:3px 12px;border-radius:20px;font-size:0.73rem;font-weight:700;">
+                5–9 Moderado
+            </span>
+            <span style="background:rgba(244,123,53,0.2);color:{C_ALTO};border:1px solid {C_ALTO}55;
+                         padding:3px 12px;border-radius:20px;font-size:0.73rem;font-weight:700;">
+                10–16 Alto
+            </span>
+            <span style="background:rgba(230,57,70,0.2);color:{C_CRITICO};border:1px solid {C_CRITICO}55;
+                         padding:3px 12px;border-radius:20px;font-size:0.73rem;font-weight:700;">
+                17–25 Crítico
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_t:
+        # Scores P×C dos ativos do estudo de caso
+        st.markdown(f'<div class="rg-card"><div class="rg-card-title">Scores P×C do Estudo de Caso</div>',
+                    unsafe_allow_html=True)
+
+        ativos_caso_pc = [
+            ("CASO-DRE-01", "Drenagem",    "Km 7+300", 5, 5, 25, "Crítico",  "Interdição imediata"),
+            ("CASO-DOR-01", "Dormente",    "Km 7+200", 5, 5, 25, "Crítico",  "Interdição imediata"),
+            ("CASO-FIX-01", "Fixação",     "Km 7+200", 4, 5, 20, "Crítico",  "Interdição imediata"),
+            ("CASO-AMV-04", "AMV",         "Km 7+180", 4, 5, 20, "Crítico",  "Interdição imediata"),
+            ("CASO-SIN-01", "Sinalização", "Km 7+100", 3, 3,  9, "Moderado", "Ação em 30 dias"),
+            ("CASO-TRI-T4", "Trilho",      "Km 6+700", 4, 4, 16, "Alto",     "Ação em 48 horas"),
+        ]
+
+        for codigo, tipo, km, p, c, score, nivel, acao in ativos_caso_pc:
+            cor = (C_CRITICO if nivel == "Crítico" else
+                   C_ALTO    if nivel == "Alto" else
+                   C_MEDIO   if nivel == "Moderado" else C_BAIXO)
+            st.markdown(f"""
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;
+                        border-bottom:1px solid {BORDER};">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;
+                            color:{ACCENT2};width:95px;flex-shrink:0;font-weight:600;">
+                    {codigo}
+                </div>
+                <div style="flex:1;">
+                    <div style="font-size:0.8rem;font-weight:600;color:{TEXT_PRI};">{tipo} · {km}</div>
+                    <div style="font-size:0.72rem;color:{TEXT_MUT};">
+                        P={p} × C={c} = <b style="color:{cor};">{score}</b> · {acao}
+                    </div>
+                </div>
+                <span style="background:{cor}22;color:{cor};border:1px solid {cor}44;
+                             padding:2px 10px;border-radius:20px;font-size:0.7rem;
+                             font-weight:700;white-space:nowrap;">
+                    {nivel}
+                </span>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # ── Análise de Causa Raiz ─────────────────────────────────────────
+    bloco("4", "ANÁLISE DE CAUSA RAIZ — FALHA EM CASCATA", "#9B59B6")
+
+    st.markdown(f"""
+    <div style="background:{CARD_BG};border:1px solid {BORDER};border-radius:14px;
+                padding:24px;margin-bottom:16px;">
+        <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;
+                    letter-spacing:0.09em;color:{TEXT_SEC};margin-bottom:18px;
+                    display:flex;align-items:center;gap:8px;">
+            <div style="width:3px;height:14px;background:#9B59B6;border-radius:2px;"></div>
+            Sequência de Deterioração Identificada — Km 7+100 ao 7+300
+        </div>
+        <!-- Cadeia causal -->
+        <div style="display:flex;flex-direction:column;gap:0;">
+            <!-- Causa raiz -->
+            <div style="background:rgba(230,57,70,0.10);border:1px solid rgba(230,57,70,0.35);
+                        border-radius:10px;padding:14px 18px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="background:{C_CRITICO};color:white;padding:4px 10px;
+                                 border-radius:6px;font-size:0.72rem;font-weight:800;
+                                 flex-shrink:0;">CAUSA RAIZ</span>
+                    <div>
+                        <div style="font-size:0.88rem;font-weight:700;color:{TEXT_PRI};">
+                            Obstrução Severa da Drenagem (Km 7+300)
+                        </div>
+                        <div style="font-size:0.78rem;color:{TEXT_SEC};margin-top:3px;">
+                            Acúmulo de água próximo à plataforma durante chuvas intensas.
+                            Das 40 unidades de drenagem inspecionadas, 1 com obstrução severa.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Seta -->
+            <div style="text-align:center;padding:6px 0;font-size:1.2rem;color:{TEXT_MUT};">↓</div>
+            <!-- Efeito 1 -->
+            <div style="background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.30);
+                        border-radius:10px;padding:14px 18px;margin-left:30px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="background:{C_CRITICO}88;color:white;padding:4px 10px;
+                                 border-radius:6px;font-size:0.72rem;font-weight:800;
+                                 flex-shrink:0;">EFEITO 1</span>
+                    <div>
+                        <div style="font-size:0.88rem;font-weight:700;color:{TEXT_PRI};">
+                            Deterioração dos Dormentes (Km 7+200) — 5 consecutivos severos
+                        </div>
+                        <div style="font-size:0.78rem;color:{TEXT_SEC};margin-top:3px;">
+                            Saturação do lastro e sub-leito → perda de capacidade de suporte →
+                            apodrecimento acelerado em curva de raio 500m (geometria exigente).
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;padding:6px 0;font-size:1.2rem;color:{TEXT_MUT};">↓</div>
+            <!-- Efeito 2 -->
+            <div style="background:rgba(244,123,53,0.08);border:1px solid rgba(244,123,53,0.30);
+                        border-radius:10px;padding:14px 18px;margin-left:60px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="background:{C_ALTO};color:white;padding:4px 10px;
+                                 border-radius:6px;font-size:0.72rem;font-weight:800;
+                                 flex-shrink:0;">EFEITO 2</span>
+                    <div>
+                        <div style="font-size:0.88rem;font-weight:700;color:{TEXT_PRI};">
+                            Falha em Série das Fixações (Km 7+150–7+250) — 10 consecutivas
+                        </div>
+                        <div style="font-size:0.78rem;color:{TEXT_SEC};margin-top:3px;">
+                            Dormentes deteriorados perdem rigidez → fixações sem suporte adequado →
+                            desaperto progressivo. 20 fixações em 500m (concentração 8× acima da média).
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;padding:6px 0;font-size:1.2rem;color:{TEXT_MUT};">↓</div>
+            <!-- Efeito 3 -->
+            <div style="background:rgba(244,123,53,0.06);border:1px solid rgba(244,123,53,0.25);
+                        border-radius:10px;padding:14px 18px;margin-left:90px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="background:{C_ALTO}88;color:white;padding:4px 10px;
+                                 border-radius:6px;font-size:0.72rem;font-weight:800;
+                                 flex-shrink:0;">EFEITO 3</span>
+                    <div>
+                        <div style="font-size:0.88rem;font-weight:700;color:{TEXT_PRI};">
+                            AMV-04 Comprometido (Km 7+180) — 6 movimentos/dia a 40 km/h
+                        </div>
+                        <div style="font-size:0.78rem;color:{TEXT_SEC};margin-top:3px;">
+                            Instabilidade geométrica da via → desgaste elevado do AMV →
+                            irregularidade no contato roda/trilho sobre via já fragilizada.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;padding:6px 0;font-size:1.2rem;color:{TEXT_MUT};">↓</div>
+            <!-- Fator agravante -->
+            <div style="background:rgba(244,166,42,0.08);border:1px solid rgba(244,166,42,0.30);
+                        border-radius:10px;padding:14px 18px;margin-left:30px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="background:{C_MEDIO};color:white;padding:4px 10px;
+                                 border-radius:6px;font-size:0.72rem;font-weight:800;
+                                 flex-shrink:0;">AGRAVANTE</span>
+                    <div>
+                        <div style="font-size:0.88rem;font-weight:700;color:{TEXT_PRI};">
+                            Sinalização Deficiente (Km 7+100) — perda de visibilidade
+                        </div>
+                        <div style="font-size:0.78rem;color:{TEXT_SEC};margin-top:3px;">
+                            Maquinista não recebe alerta antecipado da área de risco →
+                            impossibilidade de redução preventiva de velocidade.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;padding:8px 0;font-size:1.2rem;color:{TEXT_MUT};">↓</div>
+            <!-- Risco final -->
+            <div style="background:rgba(230,57,70,0.15);border:2px solid rgba(230,57,70,0.60);
+                        border-radius:10px;padding:16px 18px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div>
+                        <div style="font-size:0.95rem;font-weight:900;color:{C_CRITICO};">
+                            RISCO IMINENTE: DESCARRILAMENTO
+                        </div>
+                        <div style="font-size:0.82rem;color:{TEXT_SEC};margin-top:4px;line-height:1.6;">
+                            Alargamento de bitola em curva (R=500m) · Trem de 32,5 t/eixo a 60 km/h ·
+                            Via geometricamente instável · Sinalização comprometida.
+                            <strong style="color:{C_CRITICO};">Interdição preventiva do Km 7+100–7+300 recomendada.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Zonas críticas do banco ───────────────────────────────────────
+    bloco("5", "ZONAS CRÍTICAS DETECTADAS PELO SISTEMA", ACCENT2)
+    df_zc = db.get_all_zonas_criticas()
+    if df_zc.empty:
+        info("Nenhuma zona crítica registrada. Execute a carga de demonstração em Configurações.")
+    else:
+        for _, row in df_zc.iterrows():
+            cor_z = C_CRITICO if row["nivel_risco_zona"] == "Crítico" else C_ALTO
+            r_, g_, b_ = int(cor_z[1:3],16), int(cor_z[3:5],16), int(cor_z[5:7],16)
+            st.markdown(f"""
+            <div style="background:{CARD_BG};border:1px solid rgba({r_},{g_},{b_},0.45);
+                        border-left:5px solid {cor_z};border-radius:12px;
+                        padding:18px 22px;margin-bottom:12px;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+                    <div style="flex:1;">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.87rem;
+                                         color:{ACCENT2};font-weight:700;">
+                                {row.get("trecho_codigo","—")}
+                            </span>
+                            <span style="background:{cor_z}22;color:{cor_z};border:1px solid {cor_z}44;
+                                         padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;">
+                                {row["nivel_risco_zona"]}
+                            </span>
+                            <span style="color:{TEXT_MUT};font-size:0.75rem;font-family:'JetBrains Mono',monospace;">
+                                Km {row["km_inicio"]:.3f} → {row["km_fim"]:.3f}
+                                &nbsp;({(row["km_fim"]-row["km_inicio"])*1000:.0f} m)
+                            </span>
+                        </div>
+                        <div style="font-size:0.82rem;font-weight:600;color:{TEXT_PRI};margin-bottom:6px;">
+                            {row.get("descricao","")}
+                        </div>
+                        <div style="font-size:0.78rem;color:{TEXT_SEC};line-height:1.6;">
+                            <strong style="color:{TEXT_MUT};">Tipos de ativo afetados:</strong>
+                            {row.get("tipos_ativo","—")}<br>
+                            <strong style="color:{TEXT_MUT};">Causa raiz provável:</strong>
+                            {row.get("causa_raiz_provavel","—")}
+                        </div>
+                    </div>
+                    <div style="text-align:center;flex-shrink:0;">
+                        <div style="font-size:2rem;font-weight:900;color:{cor_z};line-height:1;">
+                            {row.get("score_medio", 0):.0f}
+                        </div>
+                        <div style="font-size:0.65rem;color:{TEXT_MUT};">Score Médio</div>
+                        <div style="margin-top:8px;font-size:1.4rem;font-weight:800;color:{TEXT_PRI};">
+                            {row.get("total_defeitos",0)}
+                        </div>
+                        <div style="font-size:0.65rem;color:{TEXT_MUT};">Defeitos</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # ── Detecção automática sobre os dados atuais ────────────────────
+    sdiv("DETECÇÃO AUTOMÁTICA — DADOS ATUAIS DO SISTEMA")
+    zonas_vivas = re_.detectar_zonas_criticas(df_at, df_r)
+    if not zonas_vivas:
+        info("O motor de análise espacial não encontrou concentrações de ≥ 3 ativos "
+             "Alto/Crítico numa janela de 500 m com os dados atuais.")
+    else:
+        mapa_trecho = df_at.drop_duplicates("trecho_id").set_index("trecho_id")["trecho_codigo"].to_dict()
+        df_vivas = pd.DataFrame(zonas_vivas)
+        df_vivas.insert(0, "trecho", df_vivas["trecho_id"].map(mapa_trecho))
+        df_vivas["ativos"] = df_vivas["ativos"].apply(", ".join)
+        st.dataframe(
+            df_vivas[["trecho", "km_inicio", "km_fim", "total_defeitos", "nivel_risco_zona",
+                      "score_medio", "tipos_ativo", "ativos", "causa_raiz_provavel"]],
+            width="stretch", hide_index=True,
+        )
+        chart_insight(
+            f"<strong>{len(zonas_vivas)}</strong> zona(s) detectada(s) em tempo real por "
+            "<code>detectar_zonas_criticas()</code> — janela deslizante de 500 m por trecho, "
+            "considerando o último score de risco de cada ativo."
+        )
+
+    # ── Comparação das duas metodologias ─────────────────────────────
+    sdiv("COMPARAÇÃO DAS METODOLOGIAS DE RISCO")
+    cl, cr = st.columns(2)
+    with cl:
+        st.markdown(f"""
+        <div class="rg-card">
+            <div class="rg-card-title">Score Ponderado 0–100 (RailGuard)</div>
+            <div style="font-size:0.82rem;color:{TEXT_SEC};line-height:1.7;">
+                <strong style="color:{TEXT_PRI};">Base:</strong> Soma ponderada de 9 fatores.<br>
+                <strong style="color:{TEXT_PRI};">Vantagem:</strong> Granularidade — varia de 0 a 100,
+                sensível a variações contínuas (vibração, idade).<br>
+                <strong style="color:{TEXT_PRI};">Limitação:</strong> Pesos são definidos
+                subjetivamente — requer validação por especialistas.<br>
+                <strong style="color:{TEXT_PRI};">Melhor uso:</strong> Comparação entre ativos,
+                tendência de degradação, input para modelo ML.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with cr:
+        st.markdown(f"""
+        <div class="rg-card">
+            <div class="rg-card-title">Matriz P×C (ISO 31000 / ERA)</div>
+            <div style="font-size:0.82rem;color:{TEXT_SEC};line-height:1.7;">
+                <strong style="color:{TEXT_PRI};">Base:</strong> Probabilidade × Consequência (1–25).<br>
+                <strong style="color:{TEXT_PRI};">Vantagem:</strong> Metodologia reconhecida
+                internacionalmente, aceita por órgãos reguladores (ANTT, ERA).<br>
+                <strong style="color:{TEXT_PRI};">Limitação:</strong> Escala discreta (25 valores) —
+                menos precisa para monitoramento contínuo.<br>
+                <strong style="color:{TEXT_PRI};">Melhor uso:</strong> Relatórios de compliance,
+                priorização de interdições, comunicação com gestores.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -2788,6 +3290,7 @@ _ROTAS = {
     "Trechos":          page_trechos,
     "Ativos":           page_ativos,
     "Inspeções":        page_inspecoes,
+    "Zona Crítica":     page_zona_critica,
     "Modelo Preditivo": page_ml,
     "Compliance":       page_compliance,
     "Auditoria":        page_auditoria,
@@ -2797,4 +3300,5 @@ _ROTAS = {
 }
 
 pagina_atual = st.session_state.get("pagina", "Dashboard")
+mostrar_flash()
 _ROTAS.get(pagina_atual, page_dashboard)()

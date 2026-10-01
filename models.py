@@ -2,10 +2,14 @@
 RailGuard AI — Modelos e Constantes de Domínio
 ================================================
 Define enumerações, pesos e mapeamentos usados em toda a aplicação.
+v0.4 — adicionadas constantes da Matriz P×C e tipos de ativo expandidos.
 """
 
-# Tipos de ativo ferroviário
-TIPOS_ATIVO = ["Trilho", "Dormente", "Fixação", "Ponte", "AMV", "Sinalização", "Outro"]
+# Tipos de ativo ferroviário (adicionado Drenagem para o estudo de caso)
+TIPOS_ATIVO = [
+    "Trilho", "Dormente", "Fixação", "Ponte",
+    "AMV", "Sinalização", "Drenagem", "Outro",
+]
 
 # Estados com malha ferroviária relevante no Brasil
 ESTADOS = [
@@ -74,13 +78,56 @@ FAIXAS_RISCO = [
 
 # Faixas de classificação RCRS
 FAIXAS_RCRS = [
-    (0,  25, "Conforme",                    "✅"),
-    (26, 50, "Atenção",                     "⚠️"),
-    (51, 75, "Não conformidade potencial",  "🔶"),
-    (76, 100, "Crítico",                    "🔴"),
+    (0,  25, "Conforme"),
+    (26, 50, "Atenção"),
+    (51, 75, "Não conformidade potencial"),
+    (76, 100, "Crítico"),
 ]
 
-# Cores para gráficos e badges (mapeadas por nível de risco)
+# ═══════════════════════════════════════════════════════════
+#  MATRIZ P×C — Probabilidade × Consequência
+#  Metodologia clássica de Engenharia de Segurança Ferroviária
+#  Ref.: ISO 31000:2018 | ERA (European Union Agency for Railways)
+# ═══════════════════════════════════════════════════════════
+
+# Escala de Probabilidade (1–5)
+PROBABILIDADE_ESCALA: dict[int, str] = {
+    1: "Muito Baixa — evento improvável nos próximos 5 anos",
+    2: "Baixa — evento improvável no próximo ano",
+    3: "Média — evento possível no próximo ano",
+    4: "Alta — evento provável nos próximos 6 meses",
+    5: "Muito Alta — evento iminente ou já recorrente",
+}
+
+# Escala de Consequência (1–5)
+CONSEQUENCIA_ESCALA: dict[int, str] = {
+    1: "Insignificante — sem dano à operação ou segurança",
+    2: "Pequena — interrupção menor, sem lesões",
+    3: "Moderada — interrupção operacional significativa",
+    4: "Grave — danos estruturais, risco de lesões",
+    5: "Catastrófica — descarrilamento, perdas humanas potenciais",
+}
+
+# Classificação da Matriz P×C (produto 1–25)
+MATRIZ_RISCO_CLASSIFICACAO: list[tuple] = [
+    (1,  4,  "Baixo",    "Monitorar periodicamente"),
+    (5,  9,  "Moderado", "Planejar ação corretiva nos próximos 30 dias"),
+    (10, 16, "Alto",     "Ação corretiva urgente — 48 horas"),
+    (17, 25, "Crítico",  "Interdição imediata e intervenção de emergência"),
+]
+
+# Cores para a Matriz P×C (compartilham paleta com risco operacional)
+MATRIZ_CORES: dict[str, str] = {
+    "Baixo":    "#0CB87A",
+    "Moderado": "#F4A62A",
+    "Alto":     "#F47B35",
+    "Crítico":  "#E63946",
+}
+
+# ═══════════════════════════════════════════════════════════
+#  CORES GLOBAIS
+# ═══════════════════════════════════════════════════════════
+
 RISK_COLORS: dict[str, str] = {
     "Baixo":   "#2ecc71",
     "Médio":   "#f39c12",
